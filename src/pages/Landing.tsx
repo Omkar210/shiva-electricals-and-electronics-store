@@ -8,6 +8,13 @@ import { useNavigate } from "react-router";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@/hooks/use-auth";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -172,10 +179,24 @@ export default function Landing() {
           </motion.div>
 
           {spotlightProducts ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-              {spotlightProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
+            <div className="relative px-12 mb-12">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {spotlightProducts.map((product) => (
+                    <CarouselItem key={product._id} className="md:basis-1/2 lg:basis-1/3">
+                      <ProductCard product={product} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-0" />
+                <CarouselNext className="right-0" />
+              </Carousel>
             </div>
           ) : (
             <div className="text-center py-12">
