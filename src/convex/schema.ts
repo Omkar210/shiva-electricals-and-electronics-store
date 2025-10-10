@@ -32,12 +32,45 @@ const schema = defineSchema(
       role: v.optional(roleValidator), // role of the user. do not remove
     }).index("email", ["email"]), // index for the email. do not remove or modify
 
-    // add other tables here
+    products: defineTable({
+      name: v.string(),
+      description: v.string(),
+      price: v.number(),
+      originalPrice: v.optional(v.number()),
+      category: v.string(),
+      image: v.string(),
+      features: v.array(v.string()),
+      inStock: v.boolean(),
+      isSpotlight: v.boolean(),
+      rating: v.number(),
+    })
+      .index("by_category", ["category"])
+      .index("by_spotlight", ["isSpotlight"]),
 
-    // tableName: defineTable({
-    //   ...
-    //   // table fields
-    // }).index("by_field", ["field"])
+    cart: defineTable({
+      userId: v.id("users"),
+      productId: v.id("products"),
+      quantity: v.number(),
+    })
+      .index("by_user", ["userId"])
+      .index("by_user_and_product", ["userId", "productId"]),
+
+    orders: defineTable({
+      userId: v.id("users"),
+      items: v.array(
+        v.object({
+          productId: v.id("products"),
+          quantity: v.number(),
+          price: v.number(),
+        })
+      ),
+      total: v.number(),
+      status: v.string(),
+      shippingAddress: v.string(),
+      customerName: v.string(),
+      customerEmail: v.string(),
+      customerPhone: v.string(),
+    }).index("by_user", ["userId"]),
   },
   {
     schemaValidation: false,
