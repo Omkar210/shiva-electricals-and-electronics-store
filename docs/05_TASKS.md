@@ -70,6 +70,8 @@ Acceptance:
 
 ## T011 --- Supabase integration
 
+Status: DONE
+
 -   Configure Supabase client.
 -   Configure server-side access.
 -   Configure browser-safe access.

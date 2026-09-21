@@ -229,6 +229,15 @@ Alternatives: Older versions considered but latest provides best long-term suppo
 Trade-offs: Newer versions mean some community guides may be outdated
 Status: Active
 
+## DEC-002 — Supabase Client and Security Architecture
+
+Date: 2026-09-22
+Decision: Use @supabase/ssr with separate browser (`client.ts`), server (`server.ts` with Next.js cookies), and admin (`admin.ts` with server-only guard) clients, plus root Next.js 16 `proxy.ts` for session refreshing.
+Reason: Prevents service-role secret leakage, ensures RLS enforcement on all standard user requests, supports Next.js 16 App Router streaming and Server Actions.
+Alternatives: Single generic supabase client (rejected: leaks secrets or bypasses auth context).
+Trade-offs: Requires discipline to never import admin client outside server tasks.
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions
