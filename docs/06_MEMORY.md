@@ -238,6 +238,17 @@ Alternatives: Single generic supabase client (rejected: leaks secrets or bypasse
 Trade-offs: Requires discipline to never import admin client outside server tasks.
 Status: Active
 
+## DEC-003 — Domain & Service Architecture Learned from AquaPure Store Reference
+
+Date: 2026-09-22
+Decision: Adopt the core service and catalog classification modeled in the owner's aquapure-store reference:
+1. Catalog tiers: Standard RO, Premium RO+UV+UF+Alkaline, Compact Wall-Mount, Gravity Non-electric, and Commercial (50L/hr).
+2. Service modules: Installation Services, Annual Maintenance Contracts (AMC with scheduled filter changes), Water Quality / TDS Testing, and 24/7 Repair & Spare Part replacement.
+3. Trust badges: Certified Quality (ISI standard), Expert Installation by local technicians, Genuine Spare Parts, and Clear Warranty terms.
+4. Preserved legacy repo: Archived the prior Vite/Convex experiment in `legacy-aquapure-store` branch on GitHub; active `main` tracks this production Next.js + Supabase platform.
+Reason: Aligns with owner's domain expectations for water purification commerce while integrating with Shiva Electrical & Electronics's broader electrical catalog (fans, wiring, accessories).
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions

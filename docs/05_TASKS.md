@@ -86,6 +86,8 @@ Acceptance:
 
 ## T012 --- Database migrations
 
+Status: DONE
+
 Create initial schema for:
 
 -   profiles
