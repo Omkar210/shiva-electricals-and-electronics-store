@@ -147,12 +147,16 @@ Acceptance:
 
 ## T030 --- Categories
 
+Status: DONE
+
 -   CRUD.
 -   Slugs.
 -   Active/inactive state.
 -   Public category pages.
 
 ## T031 --- Products
+
+Status: DONE
 
 -   CRUD.
 -   SKU.
@@ -167,6 +171,8 @@ Acceptance:
 
 ## T032 --- Product media
 
+Status: DONE
+
 -   Storage upload.
 -   Image metadata.
 -   Primary image.
@@ -174,6 +180,8 @@ Acceptance:
 -   Delete/replace.
 
 ## T033 --- Search and filtering
+
+Status: DONE
 
 -   Keyword search.
 -   Category.

@@ -259,6 +259,17 @@ Decision: Implement defense-in-depth authentication & authorization:
 Reason: Strictly complies with RULES.md Sections 5 & 16: "Frontend route protection is not sufficient alone. Enforce authorization at data/application boundary."
 Status: Active
 
+## DEC-005 — Catalog Architecture & Discovery UX
+
+Date: 2026-09-22
+Decision: Implement mobile-first catalog navigation per DESIGN.md:
+1. Product Information Architecture: Product images -> Name/Brand/SKU -> Selling Price & MRP discount -> In-stock verification -> Delivery pincode check -> CTAs -> Detailed Description -> Technical Specifications -> Compatibility & Fitment -> Warranty -> Related products.
+2. Search & Filtering: URL searchParams driven (`/products?q=...&category=...&sort=...&inStock=true`) so that filter states are bookmarkable, shareable, and fully compatible with SSR.
+3. Media Storage: Supabase Storage bucket `product-images` with RLS policies allowing public reads and restricted admin uploads. Next.js image optimization configured with remote patterns.
+4. Zero-Result Recovery: Search queries resulting in 0 matches provide clear reset controls and category redirection rather than blank dead ends.
+Reason: Maximizes local discovery, supports quick mobile purchasing decisions, and respects architectural caching rules.
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions
