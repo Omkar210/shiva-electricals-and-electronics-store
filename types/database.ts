@@ -56,6 +56,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       categories: {
         Row: {
@@ -88,6 +89,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       brands: {
         Row: {
@@ -111,6 +113,7 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
       products: {
         Row: {
@@ -167,6 +170,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       product_images: {
         Row: {
@@ -196,6 +200,7 @@ export interface Database {
           is_primary?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
       inventory_transactions: {
         Row: {
@@ -228,6 +233,7 @@ export interface Database {
           created_by?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       delivery_zones: {
         Row: {
@@ -263,6 +269,7 @@ export interface Database {
           is_active?: boolean;
           created_at?: string;
         };
+        Relationships: [];
       };
       addresses: {
         Row: {
@@ -304,6 +311,7 @@ export interface Database {
           pincode?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       carts: {
         Row: {
@@ -324,6 +332,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       cart_items: {
         Row: {
@@ -350,6 +359,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       orders: {
         Row: {
@@ -394,6 +404,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       order_items: {
         Row: {
@@ -426,6 +437,7 @@ export interface Database {
           quantity?: number;
           subtotal?: number;
         };
+        Relationships: [];
       };
       order_status_history: {
         Row: {
@@ -455,6 +467,7 @@ export interface Database {
           note?: string | null;
           created_at?: string;
         };
+        Relationships: [];
       };
       audit_logs: {
         Row: {
@@ -484,6 +497,7 @@ export interface Database {
           metadata?: Json | null;
           created_at?: string;
         };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;

@@ -249,6 +249,16 @@ Decision: Adopt the core service and catalog classification modeled in the owner
 Reason: Aligns with owner's domain expectations for water purification commerce while integrating with Shiva Electrical & Electronics's broader electrical catalog (fans, wiring, accessories).
 Status: Active
 
+## DEC-004 — Authentication & Role Authorization Enforcement
+
+Date: 2026-09-22
+Decision: Implement defense-in-depth authentication & authorization:
+1. Edge Middleware (`proxy.ts` / `middleware.ts`): Intercepts requests to `/account` and `/admin`, redirecting unauthenticated users to `/login?redirect=...`. Also redirects logged-in users away from auth forms.
+2. Server Guards (`lib/auth/roles.ts`): Cryptographically verifies user identity via `supabase.auth.getUser()`, queries the `profiles` table to read authoritative role (`customer`, `staff`, `admin`), and forbids non-staff/admin users from loading `/admin` routes.
+3. Database RLS: PostgreSQL policies enforce that even if an HTTP request bypassed the application layer, only matching `auth.uid()` or verified `role = 'admin'` rows can be queried or mutated.
+Reason: Strictly complies with RULES.md Sections 5 & 16: "Frontend route protection is not sufficient alone. Enforce authorization at data/application boundary."
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions

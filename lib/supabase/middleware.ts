@@ -39,7 +39,26 @@ export async function updateSession(request: NextRequest) {
   });
 
   // IMPORTANT: Use getUser() instead of getSession() to securely validate the JWT against Supabase Auth
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+
+  // Protect /account and /admin routes from unauthenticated access
+  if (!user && (pathname.startsWith("/account") || pathname.startsWith("/admin"))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect authenticated users away from /login and /signup
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/account";
+    return NextResponse.redirect(url);
+  }
 
   return supabaseResponse;
 }

@@ -116,6 +116,8 @@ Acceptance:
 
 ## T020 --- Customer authentication
 
+Status: DONE
+
 -   Signup/login.
 -   Session management.
 -   Logout.
@@ -126,6 +128,8 @@ Acceptance:
 -   User cannot access another customer's account data.
 
 ## T021 --- Admin authorization
+
+Status: DONE
 
 -   Define roles.
 -   Protect admin routes.
