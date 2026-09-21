@@ -1,0 +1,2 @@
+-- Supabase database migrations will be placed here.
+-- Each migration file should follow the format: YYYYMMDDHHMMSS_description.sql
