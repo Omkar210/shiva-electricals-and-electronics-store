@@ -8,7 +8,7 @@ This document is a living execution backlog.
 
 ## T001 --- Inspect environment
 
-Status: NOT STARTED
+Status: DONE
 
 -   Inspect repository.
 -   Inspect existing files.
@@ -27,7 +27,7 @@ Acceptance:
 
 ## T002 --- Establish project documentation
 
-Status: NOT STARTED
+Status: DONE
 
 Create:
 
@@ -51,6 +51,8 @@ Acceptance:
 # Phase 1 --- Application Foundation
 
 ## T010 --- Next.js foundation
+
+Status: DONE
 
 -   Configure TypeScript.
 -   Configure linting.

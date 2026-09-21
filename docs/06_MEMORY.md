@@ -220,6 +220,15 @@ Trade-offs:
 Status:
 ```
 
+## DEC-001 — Foundation Stack Versions
+
+Date: 2026-09-21
+Decision: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, ESLint 9 (flat config)
+Reason: Latest stable versions; Next.js 16 removed built-in lint command (use ESLint directly); ESLint 9 requires flat config format; Tailwind CSS 4 uses @tailwindcss/postcss plugin
+Alternatives: Older versions considered but latest provides best long-term support
+Trade-offs: Newer versions mean some community guides may be outdated
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions
