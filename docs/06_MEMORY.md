@@ -341,7 +341,18 @@ Decision: Enforce modern search engine optimization and discoverability standard
 2. Crawler Access Governance: Implemented `app/robots.ts` ensuring public catalog indexing while strictly forbidding search engine crawlers from indexing authenticated customer accounts, checkout sessions, and admin portals.
 3. Rich Structured Schema (JSON-LD): Injected schema.org `HomeGoodsStore` / `LocalBusiness` data into the root layout and rich `Product` + `Offer` schemas into product detail pages, enabling Google rich snippets (prices, ratings, and in-stock badges).
 4. Metadata Consistency: Configured `metadataBase`, dynamic canonical URLs, and OpenGraph/Twitter card previews across product pages and public storefront routes.
-Reason: Ensures organic discoverability on Google for local water purifier buyers and electrical supply customers while protecting private account and administration routes.
+## DEC-012 — Comprehensive Test Suite, Pure Business Rules Engine & Security Guardrails
+
+Date: 2026-09-24
+Decision: Implement an isolated pure business logic engine and automated unit test suite:
+1. Pure Business Engine (`lib/business-rules.ts`): Decoupled pricing calculations, order status finite state transitions, postal pincode normalization, zone eligibility rules, and customer cancellation authorization from database I/O to enable fast, deterministic verification.
+2. Native Node.js Test Runner: Utilized Node 24 native TypeScript test runner (`node --test tests/*.test.ts`) with zero runtime overhead or heavy test framework dependencies.
+3. Test Coverage Across Critical Vectors:
+   - `tests/pricing.test.ts`: Verifies line item totals, free delivery edge cases, negative fee/discount tampering protection, and discount capping.
+   - `tests/state-machine.test.ts`: Verifies valid advancement sequences, terminal state immutability, delivery failure re-dispatches, and illegal skip rejections.
+   - `tests/delivery.test.ts`: Verifies 6-digit pincode format validation, whitespace cleanup, zone eligibility, and minimum order enforcement.
+   - `tests/security.test.ts`: Verifies ownership verification for self-cancellations, status gates, and payload injection sanitization.
+Reason: Ensures zero regression risks across business-critical financial calculations and fulfillment transitions before live production deployment.
 Status: Active
 
 

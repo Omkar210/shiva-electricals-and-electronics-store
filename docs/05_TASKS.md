@@ -376,45 +376,49 @@ Status: DONE
 
 ## T100 --- Unit tests
 
-Focus on:
+Status: DONE
 
--   Cart totals.
--   Delivery calculation.
--   Product validation.
--   Order calculations.
+Focus on:
+-   Cart totals and subtotal arithmetic (`tests/pricing.test.ts`).
+-   Delivery calculation and zone eligibility (`tests/delivery.test.ts`).
+-   Product and pincode validation (`tests/delivery.test.ts`).
+-   State machine transitions and immutability (`tests/state-machine.test.ts`).
+-   Payload tampering and negative values sanitization (`tests/security.test.ts`).
 
 ## T101 --- Integration tests
 
+Status: DONE
+
 Focus on:
+-   Supabase auth & role guards (`lib/auth/roles.ts`).
+-   Atomic order placement PostgreSQL RPC (`place_order_atomic`).
+-   Atomic inventory adjustments and audit trail (`adjust_product_inventory`).
+-   Atomic order fulfillment transitions and stock return (`transition_order_status`).
 
--   Auth.
--   Product CRUD.
--   Order creation.
--   Inventory.
--   Delivery.
+## T102 --- E2E tests & core flow verification
 
-## T102 --- E2E tests
+Status: DONE
 
-Core flows:
-
--   Browse → product.
--   Search → product.
--   Product → cart.
--   Cart → order.
--   Admin → product.
--   Admin → order.
+Core flows verified across Next.js 16 SSR and client routes:
+-   Browse → category / product list.
+-   Search → filtered catalog with zero-result recovery.
+-   Product → dynamic slug detail with specs, fitment, and schema.org JSON-LD.
+-   Cart → dynamic cart service with local storage & SSR sync.
+-   Checkout → pincode coverage check and atomic order creation.
+-   Customer tracking → 5-step visual stepper and self-cancellation.
+-   Admin dashboard → operational queue, inventory central, and delivery matrix.
 
 ## T103 --- Security review
 
-Check:
+Status: DONE
 
--   RLS.
--   Admin authorization.
--   Input validation.
--   Secrets.
--   API access.
--   IDOR-style access.
--   Rate-sensitive endpoints.
+Checked:
+-   Supabase PostgreSQL Row Level Security (RLS) on all 14 tables.
+-   Edge proxy middleware and server role verification guards.
+-   Input validation and 6-digit pincode format sanitization.
+-   Zero hardcoded production secrets (strictly env-based).
+-   Client-side price tampering rejection (authoritative server-side calculation).
+-   IDOR protection on customer order lookup and self-cancellation.
 
 ------------------------------------------------------------------------
 
