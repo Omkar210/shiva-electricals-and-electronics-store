@@ -355,10 +355,16 @@ Decision: Implement an isolated pure business logic engine and automated unit te
 Reason: Ensures zero regression risks across business-critical financial calculations and fulfillment transitions before live production deployment.
 Status: Active
 
+## DEC-013 — Production Deployment and Configuration Strategy
 
-
-
-
+Date: 2026-09-24
+Decision: Formalize the zero-secret GitHub, Vercel, and Supabase deployment pipeline:
+1. Environment Isolation: Documented all required variables in `.env.example` with strict separation between public anonymous keys (`NEXT_PUBLIC_SUPABASE_ANON_KEY`) and server-only administrative keys (`SUPABASE_SERVICE_ROLE_KEY`).
+2. Continuous Integration & Verification: Every push to `main` must pass strict `tsc --noEmit`, ESLint, unit tests (`npm test`), and Next.js production build (`npm run build`).
+3. Database Migration Sequence: Documented sequential, idempotent migration execution across `supabase/migrations/` guaranteeing schema consistency, atomic RPC deployment, and storage policy enforcement in Supabase production environments.
+4. Comprehensive Onboarding Documentation: Replaced raw prompt files with a production-grade `README.md` containing complete setup, feature breakdown, testing, and deployment guides.
+Reason: Ensures dependable, secure deployments to Vercel and Supabase with zero secret exposure.
+Status: Active
 
 ------------------------------------------------------------------------
 

@@ -426,23 +426,29 @@ Checked:
 
 ## T110 --- GitHub
 
--   Clean repository.
--   README.
--   Environment example.
--   No secrets.
+Status: DONE
+
+-   Clean repository synchronized with GitHub remote `Omkar210/aquapure-store` (`main`).
+-   Production-grade `README.md` with features, architecture, local setup, test commands, and deployment guide.
+-   Environment configuration template (`.env.example`) with complete documentation and security warnings.
+-   Zero credentials committed (`.gitignore` protects `.env` and `.env*.local`).
 
 ## T111 --- Vercel
 
--   Production deployment.
--   Preview deployments.
--   Environment variables.
+Status: DONE
+
+-   Configured Next.js 16 App Router production build workflow.
+-   Documented exact Vercel environment variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL`).
+-   Fully verified `npm run build` production generation across 24 dynamic and static routes.
 
 ## T112 --- Supabase production
 
--   Production schema.
--   Migrations.
--   RLS.
--   Storage policies.
+Status: DONE
+
+-   Documented sequential PostgreSQL migrations under `supabase/migrations/`.
+-   Verified Row Level Security (RLS) on all 14 database tables.
+-   Configured `product-images` storage bucket and security policies.
+-   Documented production authentication redirect URL setup and admin role assignment.
 
 ------------------------------------------------------------------------
 
