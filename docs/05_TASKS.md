@@ -328,17 +328,23 @@ Do not implement live GPS tracking unless explicitly required.
 
 ## T080 --- Dashboard
 
+Status: DONE
+
 Display:
 
--   Sales.
--   Orders.
--   Pending orders.
--   Low stock.
--   Recent orders.
+-   Sales & revenue aggregates.
+-   Orders total & status breakdown.
+-   Pending orders queue (needs confirmation).
+-   Low stock warnings & reorder watch.
+-   Recent orders stream with one-click quick actions.
+-   Recent system audit logs.
 
 ## T081 --- Admin search/filtering
 
+Status: DONE
+
 Make common operational tasks fast.
+- Fast status tabs and live search across Orders, Inventory, Delivery Zones, and Products.
 
 ------------------------------------------------------------------------
 

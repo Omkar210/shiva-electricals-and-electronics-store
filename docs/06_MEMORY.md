@@ -322,6 +322,18 @@ Decision: Implement authoritative delivery zone management and public coverage t
 Reason: Eliminates delivery ambiguity for customers while providing the shop owner with total flexibility over local transport logistics.
 Status: Active
 
+## DEC-010 — Unified Operational Command Center & Real-Time Analytics
+
+Date: 2026-09-24
+Decision: Upgrade the administrative home at `/admin` into an authoritative Operational Command Center per Phase 8:
+1. Multi-Tier Financial & Dispatch Aggregates: Real-time calculation of Gross Sales, Today's Revenue, Average Order Value (AOV), and fulfillment stage distributions (Placed, In Preparation, Out for Delivery, Delivered, Cancelled).
+2. Actionable Verification Queue: Immediate visibility and direct links to pending customer orders requiring shop verification, with embedded one-click confirmation actions right from the dashboard table.
+3. Proactive Stock Reorder Watch: Surfacing critical low-stock items with stock progress indicators and direct links to the stock adjustment modal.
+4. Live System Activity Stream: Rendering recent mutations from `audit_logs` (order transitions, inward purchases, write-offs) for maximum shop accountability.
+Reason: Transforms static statistics into a fast, daily operational hub tailored for the physical electronics and water purifier storefront.
+Status: Active
+
+
 
 
 
