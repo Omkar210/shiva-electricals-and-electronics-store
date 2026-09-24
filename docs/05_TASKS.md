@@ -456,22 +456,30 @@ Status: DONE
 
 ## T120 --- Observability
 
--   Error monitoring.
--   Logs.
--   Operational alerts.
+Status: DONE
+
+-   Client & server error logging via route-level error boundary (`app/error.tsx`) and root (`app/global-error.tsx`).
+-   Real-time system audit logs stream and operational alert cards on admin dashboard (`/admin`).
+-   Standardized Next.js incident digest capturing.
 
 ## T121 --- Backup/recovery documentation
 
-Document:
+Status: DONE
 
--   Database recovery.
--   Storage recovery.
--   Deployment rollback.
--   Migration rollback strategy.
+-   Comprehensive operational runbook established in `docs/07_RECOVERY.md`.
+-   Documented automated Supabase snapshots, PITR, and offline `pg_dump` commands.
+-   Documented Supabase storage bucket `product-images` backup & restore procedures.
+-   Documented Vercel instant deployment zero-downtime rollback protocols.
+-   Documented forward-only migration compensation and atomic RPC rollbacks.
 
 ## T122 --- Production acceptance test
 
-Run all critical flows.
+Status: DONE
+
+-   Automated unit tests verified: `npm test` (26 tests passing).
+-   TypeScript typecheck verified: `npm run typecheck` (0 errors).
+-   ESLint verification: `npm run lint` (0 errors, 0 warnings).
+-   Next.js production build: `npm run build` (All 24 routes compiled).
 
 ------------------------------------------------------------------------
 

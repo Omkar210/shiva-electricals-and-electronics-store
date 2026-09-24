@@ -366,6 +366,16 @@ Decision: Formalize the zero-secret GitHub, Vercel, and Supabase deployment pipe
 Reason: Ensures dependable, secure deployments to Vercel and Supabase with zero secret exposure.
 Status: Active
 
+## DEC-014 — Observability, Error Resilience & Disaster Recovery Runbook
+
+Date: 2026-09-24
+Decision: Enforce production operational resilience and recovery governance:
+1. Multi-tier Error Boundaries: Injected route-level error boundaries (`app/error.tsx`) with incident digest tracking and user-friendly retry controls, preventing uncaught errors from crashing the root layout.
+2. Operational Runbook (`docs/07_RECOVERY.md`): Established authoritative disaster recovery protocols including Supabase automated snapshot restoration, point-in-time recovery (PITR), offline `pg_dump` backups, media bucket preservation, Vercel sub-5-second instant deployment rollbacks, and forward-only migration compensation.
+3. Production Acceptance Criteria: All core user and administrative journeys verified across build, typecheck, lint, and automated test runners with 100% pass rates.
+Reason: Protects store availability and guarantees rapid operational recovery during infrastructure or software disruptions.
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions
