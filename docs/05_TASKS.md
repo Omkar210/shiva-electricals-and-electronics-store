@@ -302,6 +302,8 @@ Status: DONE
 
 ## T070 --- Delivery zones
 
+Status: DONE
+
 -   CRUD.
 -   Pincode.
 -   Town.
@@ -311,9 +313,12 @@ Status: DONE
 
 ## T071 --- Delivery workflow
 
+Status: DONE
+
 -   Delivery assignment abstraction.
 -   Status.
 -   Notes.
+-   Public coverage directory and live pincode lookup.
 
 Do not implement live GPS tracking unless explicitly required.
 

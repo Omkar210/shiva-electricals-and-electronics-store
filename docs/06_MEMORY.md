@@ -311,6 +311,18 @@ Decision: Enforce strict transactional inventory management per Section 15 of RU
 Reason: Prevents overselling, protects against stock drift, and provides store owners with full accountability over high-value electrical and water purifier inventory.
 Status: Active
 
+## DEC-009 — Delivery Matrix Management & Coverage Transparency
+
+Date: 2026-09-24
+Decision: Implement authoritative delivery zone management and public coverage transparency:
+1. Full Administrative Matrix CRUD: Dedicated `/admin/delivery` management console enabling store owners and administrators to configure serviced postal pincodes, town names, zone clusters, delivery charges (including ₹0 for free local delivery), minimum order thresholds, and realistic delivery SLAs (e.g. "Same-day (within 2-4 hours)").
+2. Real-Time Active Toggle & Validation: Instant status switches allow disabling pincodes under adverse weather, transport disruptions, or remote courier issues without deleting the zone configuration.
+3. Transparent Customer Coverage Directory: Dedicated public route at `/delivery` equipped with an interactive 6-digit pincode checker, detailed service highlights (Same-day dispatch, certified doorstep installation, COD availability), and clear escalation channels for special nearby town private vehicle consignments.
+4. Defense-in-Depth Delivery Pricing: Client-side delivery fee calculations remain strictly visual; server actions and checkout re-query PostgreSQL `delivery_zones` at the point of order creation to ensure zero fee tampering.
+Reason: Eliminates delivery ambiguity for customers while providing the shop owner with total flexibility over local transport logistics.
+Status: Active
+
+
 
 
 ------------------------------------------------------------------------

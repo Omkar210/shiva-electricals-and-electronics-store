@@ -8,6 +8,7 @@ import {
   Search,
   Wrench,
   Package,
+  Truck,
 } from "lucide-react";
 
 export default async function Navbar() {
@@ -67,6 +68,14 @@ export default async function Navbar() {
           >
             <Wrench className="h-4 w-4 text-gray-500" />
             Services
+          </Link>
+
+          <Link
+            href="/delivery"
+            className="hidden items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 sm:flex"
+          >
+            <Truck className="h-4 w-4 text-gray-500" />
+            Delivery
           </Link>
 
           {/* Cart Icon */}
