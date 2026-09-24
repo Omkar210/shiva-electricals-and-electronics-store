@@ -525,6 +525,17 @@ export interface Database {
         };
         Returns: Json;
       };
+      adjust_product_inventory: {
+        Args: {
+          p_product_id: string;
+          p_quantity_change: number;
+          p_transaction_type: string;
+          p_reason: string;
+          p_reference_id?: string | null;
+          p_created_by?: string | null;
+        };
+        Returns: Json;
+      };
     };
     Enums: {
       user_role: UserRole;

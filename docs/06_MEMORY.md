@@ -300,6 +300,18 @@ Decision: Implement transactional order fulfillment and lifecycle tracking per P
 Reason: Ensures strict operational control for shop staff while delivering transparency to customers and protecting inventory counts.
 Status: Active
 
+## DEC-008 — Inventory Central, Atomic Adjustments & Audit Trail
+
+Date: 2026-09-24
+Decision: Enforce strict transactional inventory management per Section 15 of RULES.md:
+1. Concurrency-Safe Atomic Stock Adjustments: Atomic PostgreSQL function `adjust_product_inventory` locks the product row (`FOR UPDATE`), checks that `stock_quantity + quantity_change >= 0`, updates the stock, writes an immutable row to `inventory_transactions`, and logs to `audit_logs`.
+2. Prohibited Silent Drift: Manual stock quantity updates directly in the application layer without a transaction record are strictly forbidden. Every adjustment specifies a mandatory reason, transaction type (`PURCHASE`, `RETURN`, `ADJUSTMENT`, `DAMAGE`), and optional reference document ID (PO, RMA, invoice).
+3. Inventory Central UI: Admin dashboard at `/admin/inventory` featuring live KPI cards (Total Stock Units, Low Stock Warnings, Out of Stock Count, Total Stock Valuation in ₹), status tabs (`ALL`, `LOW_STOCK`, `OUT_OF_STOCK`, `HEALTHY`), and search/category filters.
+4. Comprehensive Audit Trail: Dedicated `/admin/inventory/audit` log page displaying the chronological history of all inward purchases, order sales, returns, and write-offs.
+Reason: Prevents overselling, protects against stock drift, and provides store owners with full accountability over high-value electrical and water purifier inventory.
+Status: Active
+
+
 
 ------------------------------------------------------------------------
 

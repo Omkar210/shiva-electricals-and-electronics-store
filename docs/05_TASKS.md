@@ -274,11 +274,15 @@ Status: DONE
 
 ## T060 --- Inventory dashboard
 
+Status: DONE
+
 -   Current stock.
 -   Low stock.
 -   Out of stock.
 
 ## T061 --- Inventory mutations
+
+Status: DONE
 
 -   Add stock.
 -   Remove stock.
@@ -286,6 +290,8 @@ Status: DONE
 -   Transaction history.
 
 ## T062 --- Concurrency safety
+
+Status: DONE
 
 -   Prevent overselling.
 -   Test concurrent order scenarios.
