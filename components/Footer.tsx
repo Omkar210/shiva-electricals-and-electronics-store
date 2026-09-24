@@ -104,6 +104,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/delivery" className="hover:text-blue-600">
+                  Delivery Coverage &amp; Pincodes
+                </Link>
+              </li>
+              <li>
                 <span className="text-gray-400">Doorstep Installation</span>
               </li>
               <li>

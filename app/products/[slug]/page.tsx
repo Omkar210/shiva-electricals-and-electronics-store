@@ -6,6 +6,7 @@ import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/products";
 import DeliveryCheck from "@/components/catalog/DeliveryCheck";
 import ProductCard from "@/components/catalog/ProductCard";
 import AddToCartButton from "@/components/catalog/AddToCartButton";
+import { JsonLd } from "@/components/seo/JsonLd";
 import {
   Check,
   X,
@@ -28,11 +29,36 @@ export async function generateMetadata({
     return { title: "Product Not Found" };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shivaelectrical.in";
+  const primaryImage =
+    product.images?.find((img) => img.is_primary)?.storage_path ||
+    product.images?.[0]?.storage_path;
+
   return {
     title: product.name,
     description:
       product.description ||
-      `Buy ${product.name} at Shiva Electrical & Electronics with local delivery.`,
+      `Buy ${product.name} (SKU: ${product.sku}) at Shiva Electrical & Electronics. Genuine quality with fast doorstep delivery and expert installation.`,
+    alternates: {
+      canonical: `${siteUrl}/products/${product.slug}`,
+    },
+    openGraph: {
+      title: `${product.name} | Shiva Electrical & Electronics`,
+      description:
+        product.description ||
+        `Buy ${product.name} at ₹${product.price.toLocaleString("en-IN")}. Genuine stock with local delivery and doorstep setup.`,
+      url: `${siteUrl}/products/${product.slug}`,
+      type: "website",
+      images: primaryImage ? [{ url: primaryImage, alt: product.name }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description:
+        product.description ||
+        `Buy ${product.name} at ₹${product.price.toLocaleString("en-IN")}. Local doorstep delivery available.`,
+      images: primaryImage ? [primaryImage] : undefined,
+    },
   };
 }
 
@@ -51,8 +77,38 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     ? Math.round(((product.mrp! - product.price) / product.mrp!) * 100)
     : 0;
 
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    sku: product.sku,
+    image: product.images?.map((img) => img.storage_path) || [],
+    brand: product.brands
+      ? {
+          "@type": "Brand",
+          name: product.brands.name,
+        }
+      : undefined,
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "INR",
+      priceValidUntil: "2027-12-31",
+      availability: isInStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: {
+        "@type": "Organization",
+        name: "Shiva Electrical & Electronics",
+      },
+    },
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-12">
+      <JsonLd data={productSchema} />
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-2 text-xs text-gray-500">
         <Link href="/" className="hover:text-blue-600">Home</Link>

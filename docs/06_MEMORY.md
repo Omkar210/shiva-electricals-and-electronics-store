@@ -333,6 +333,18 @@ Decision: Upgrade the administrative home at `/admin` into an authoritative Oper
 Reason: Transforms static statistics into a fast, daily operational hub tailored for the physical electronics and water purifier storefront.
 Status: Active
 
+## DEC-011 — Search Engine Optimization, Structured Data & Discoverability
+
+Date: 2026-09-24
+Decision: Enforce modern search engine optimization and discoverability standards per Phase 9:
+1. Dynamic XML Sitemap: Implemented `app/sitemap.ts` to automatically crawl active PostgreSQL `categories` and `products` alongside static routes (`/`, `/products`, `/delivery`) with proper priority weights and update timestamps.
+2. Crawler Access Governance: Implemented `app/robots.ts` ensuring public catalog indexing while strictly forbidding search engine crawlers from indexing authenticated customer accounts, checkout sessions, and admin portals.
+3. Rich Structured Schema (JSON-LD): Injected schema.org `HomeGoodsStore` / `LocalBusiness` data into the root layout and rich `Product` + `Offer` schemas into product detail pages, enabling Google rich snippets (prices, ratings, and in-stock badges).
+4. Metadata Consistency: Configured `metadataBase`, dynamic canonical URLs, and OpenGraph/Twitter card previews across product pages and public storefront routes.
+Reason: Ensures organic discoverability on Google for local water purifier buyers and electrical supply customers while protecting private account and administration routes.
+Status: Active
+
+
 
 
 

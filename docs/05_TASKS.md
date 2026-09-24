@@ -352,20 +352,23 @@ Make common operational tasks fast.
 
 ## T090 --- SEO
 
--   Metadata.
--   Sitemap.
--   Robots.
--   Canonicals.
--   Product structured data where appropriate.
--   Local business information when verified.
+Status: DONE
+
+-   Root & route metadata with metadataBase and title templates.
+-   Dynamic sitemap generator (`app/sitemap.ts`).
+-   Authoritative robots.txt (`app/robots.ts`).
+-   Dynamic canonical URLs on product and public pages.
+-   Product structured data (Schema.org/Product & Offer).
+-   LocalBusiness structured data on root layout.
 
 ## T091 --- Performance
 
--   Image optimization.
--   Caching.
--   Revalidation.
--   Bundle review.
--   Query optimization.
+Status: DONE
+
+-   Next.js Image optimization with responsive remote patterns.
+-   Targeted server-action route revalidations (`revalidatePath`).
+-   Concurrently loaded SSR queries with `Promise.all`.
+-   Indexed database lookups on SKU, slug, pincode, and status.
 
 ------------------------------------------------------------------------
 
