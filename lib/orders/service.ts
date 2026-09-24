@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/auth/roles";
 import { getCart, clearCart } from "@/lib/cart/service";
 import { validateDeliveryZone } from "@/lib/checkout/delivery";
+import type { OrderStatus } from "@/types/database";
 
 export interface CheckoutInput {
   name: string;
@@ -38,6 +39,15 @@ export interface OrderAddressSnapshot {
   payment_method?: string;
 }
 
+export interface OrderStatusHistoryItem {
+  id: string;
+  old_status: string | null;
+  new_status: string;
+  note: string | null;
+  changed_by?: string | null;
+  created_at: string;
+}
+
 export interface ConfirmedOrderItem {
   id: string;
   product_id: string | null;
@@ -60,7 +70,9 @@ export interface ConfirmedOrderDetails {
   payment_status: string;
   order_status: string;
   created_at: string;
+  updated_at?: string;
   order_items: ConfirmedOrderItem[];
+  order_status_history?: OrderStatusHistoryItem[];
 }
 
 /**
@@ -218,6 +230,7 @@ export async function getOrderByNumber(orderNumber: string) {
         payment_status,
         order_status,
         created_at,
+        updated_at,
         order_items (
           id,
           product_id,
@@ -242,3 +255,272 @@ export async function getOrderByNumber(orderNumber: string) {
   if (error || !order) return null;
   return order as unknown as ConfirmedOrderDetails;
 }
+
+/**
+ * Lists all orders placed by a specific customer account, newest first.
+ */
+export async function listCustomerOrders(userId: string): Promise<ConfirmedOrderDetails[]> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select(
+      `
+        id,
+        order_number,
+        user_id,
+        delivery_address_snapshot,
+        subtotal,
+        delivery_fee,
+        discount,
+        total,
+        payment_status,
+        order_status,
+        created_at,
+        updated_at,
+        order_items (
+          id,
+          product_id,
+          product_name_snapshot,
+          sku_snapshot,
+          unit_price,
+          quantity,
+          subtotal
+        )
+      `,
+    )
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching customer orders:", error);
+    return [];
+  }
+
+  return (data || []) as unknown as ConfirmedOrderDetails[];
+}
+
+export interface AdminOrderListFilter {
+  status?: string;
+  search?: string;
+}
+
+/**
+ * Lists orders for store staff / admin with filtering and search.
+ */
+export async function listAdminOrders(
+  filter?: AdminOrderListFilter,
+): Promise<ConfirmedOrderDetails[]> {
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("orders")
+    .select(
+      `
+        id,
+        order_number,
+        user_id,
+        delivery_address_snapshot,
+        subtotal,
+        delivery_fee,
+        discount,
+        total,
+        payment_status,
+        order_status,
+        created_at,
+        updated_at,
+        order_items (
+          id,
+          product_id,
+          product_name_snapshot,
+          sku_snapshot,
+          unit_price,
+          quantity,
+          subtotal
+        )
+      `,
+    )
+    .order("created_at", { ascending: false });
+
+  if (filter?.status && filter.status !== "ALL") {
+    query = query.eq("order_status", filter.status as OrderStatus);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error("Error fetching admin orders:", error);
+    return [];
+  }
+
+  let results = (data || []) as unknown as ConfirmedOrderDetails[];
+
+  if (filter?.search?.trim()) {
+    const q = filter.search.toLowerCase().trim();
+    results = results.filter((o) => {
+      const addr = o.delivery_address_snapshot;
+      return (
+        o.order_number.toLowerCase().includes(q) ||
+        addr?.name?.toLowerCase().includes(q) ||
+        addr?.phone?.includes(q) ||
+        addr?.pincode?.includes(q) ||
+        addr?.town?.toLowerCase().includes(q)
+      );
+    });
+  }
+
+  return results;
+}
+
+/**
+ * Retrieves comprehensive order details for staff/admin management,
+ * including full status history and actor notes.
+ */
+export async function getAdminOrderById(orderId: string): Promise<ConfirmedOrderDetails | null> {
+  const supabase = await createClient();
+
+  const { data: order, error } = await supabase
+    .from("orders")
+    .select(
+      `
+        id,
+        order_number,
+        user_id,
+        delivery_address_snapshot,
+        subtotal,
+        delivery_fee,
+        discount,
+        total,
+        payment_status,
+        order_status,
+        created_at,
+        updated_at,
+        order_items (
+          id,
+          product_id,
+          product_name_snapshot,
+          sku_snapshot,
+          unit_price,
+          quantity,
+          subtotal
+        ),
+        order_status_history (
+          id,
+          old_status,
+          new_status,
+          note,
+          changed_by,
+          created_at
+        )
+      `,
+    )
+    .eq("id", orderId)
+    .single();
+
+  if (error || !order) return null;
+  return order as unknown as ConfirmedOrderDetails;
+}
+
+/**
+ * Executes a concurrency-safe order status transition via atomic PostgreSQL RPC.
+ */
+export async function transitionOrderStatus({
+  orderId,
+  newStatus,
+  note,
+  paymentStatus,
+}: {
+  orderId: string;
+  newStatus: string;
+  note?: string;
+  paymentStatus?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const user = await getCurrentUser();
+  if (!user) {
+    return { success: false, error: "Authentication required to update order status." };
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("transition_order_status", {
+    p_order_id: orderId,
+    p_new_status: newStatus,
+    p_changed_by: user.id,
+    p_note: note || null,
+    p_payment_status: paymentStatus || null,
+  });
+
+  if (error) {
+    console.error("Order status transition error:", error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
+
+/**
+ * Allows a customer to cancel their own order provided it is still in PLACED state.
+ */
+export async function cancelCustomerOrder({
+  orderNumber,
+  reason,
+}: {
+  orderNumber: string;
+  reason?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  const user = await getCurrentUser();
+  if (!user) {
+    return { success: false, error: "Please log in to manage your order." };
+  }
+
+  const supabase = await createClient();
+  const { data: order, error: fetchError } = await supabase
+    .from("orders")
+    .select("id, user_id, order_status")
+    .eq("order_number", orderNumber)
+    .single();
+
+  if (fetchError || !order) {
+    return { success: false, error: "Order not found." };
+  }
+
+  if (order.user_id !== user.id) {
+    return { success: false, error: "You are not authorized to cancel this order." };
+  }
+
+  if (order.order_status !== "PLACED") {
+    return {
+      success: false,
+      error: `Orders in '${order.order_status}' status cannot be self-cancelled. Please contact Shiva Electrical store support.`,
+    };
+  }
+
+  return transitionOrderStatus({
+    orderId: order.id,
+    newStatus: "CANCELLED",
+    note: reason ? `Customer cancellation: ${reason}` : "Customer cancelled order from account portal.",
+  });
+}
+
+/**
+ * Look up a guest order by order number and phone number verification.
+ */
+export async function lookupGuestOrder({
+  orderNumber,
+  phone,
+}: {
+  orderNumber: string;
+  phone: string;
+}): Promise<ConfirmedOrderDetails | null> {
+  const order = await getOrderByNumber(orderNumber.trim());
+  if (!order) return null;
+
+  const rawPhone = phone.replace(/\D/g, "");
+  const orderPhone = (order.delivery_address_snapshot?.phone || "").replace(/\D/g, "");
+
+  if (orderPhone.endsWith(rawPhone) || rawPhone.endsWith(orderPhone)) {
+    return order;
+  }
+
+  return null;
+}
+

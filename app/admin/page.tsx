@@ -18,11 +18,13 @@ export default async function AdminDashboardPage() {
     { count: productsCount },
     { count: categoriesCount },
     { count: deliveryZonesCount },
+    { count: pendingOrdersCount },
     { data: lowStockProducts },
   ] = await Promise.all([
     supabase.from("products").select("*", { count: "exact", head: true }),
     supabase.from("categories").select("*", { count: "exact", head: true }),
     supabase.from("delivery_zones").select("*", { count: "exact", head: true }),
+    supabase.from("orders").select("*", { count: "exact", head: true }).eq("order_status", "PLACED"),
     supabase
       .from("products")
       .select("id, name, stock_quantity, low_stock_threshold")
@@ -95,16 +97,21 @@ export default async function AdminDashboardPage() {
           <p className="mt-1 text-xs text-gray-500">Service pincodes mapped</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs">
+        <Link
+          href="/admin/orders?status=PLACED"
+          className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs hover:border-purple-300 transition-colors block"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-gray-500">Pending Orders</span>
             <div className="rounded-lg bg-purple-50 p-2 text-purple-600">
               <ShoppingCart className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-3 text-2xl font-bold text-gray-900">0</p>
-          <p className="mt-1 text-xs text-gray-500">Awaiting confirmation</p>
-        </div>
+          <p className="mt-3 text-2xl font-bold text-gray-900">
+            {pendingOrdersCount ?? 0}
+          </p>
+          <p className="mt-1 text-xs text-purple-600 font-medium">Awaiting confirmation &rarr;</p>
+        </Link>
       </div>
 
       {/* Operational Attention Section */}

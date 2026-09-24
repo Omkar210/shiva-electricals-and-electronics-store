@@ -283,6 +283,24 @@ Decision: Enforce strict transactional integrity across cart and order creation 
 Reason: Protects store financial and stock integrity under concurrent customer access.
 Status: Active
 
+## DEC-007 — Order Management State Machine, Audit Trails & Stock Restoration
+
+Date: 2026-09-24
+Decision: Implement transactional order fulfillment and lifecycle tracking per Phase 5:
+1. Valid State Machine: Strictly controlled transitions:
+   - PLACED -> CONFIRMED or CANCELLED
+   - CONFIRMED -> PACKED or CANCELLED
+   - PACKED -> OUT_FOR_DELIVERY or CANCELLED
+   - OUT_FOR_DELIVERY -> DELIVERED, CANCELLED, or FAILED
+   - DELIVERED & CANCELLED are terminal states
+2. Automatic Stock Restoration on Cancellation: Atomic PostgreSQL RPC `transition_order_status` inspects all `order_items` when status transitions to `CANCELLED`, restores the quantity to `products.stock_quantity`, and records audit entries in `inventory_transactions` with `transaction_type = 'RETURN'`.
+3. Comprehensive Multi-tier Audit Trail: Every transition writes to `order_status_history` (with changed_by, old_status, new_status, note, and timestamp) and `audit_logs` (with action = 'ORDER_STATUS_TRANSITION').
+4. Customer Tracking Experience: Dedicated `/orders` dashboard and `/orders/[orderNumber]` live tracking page with a visual stepper (`OrderTimelineStepper`), delivery snapshot details, itemized cost summary, and self-cancellation button available exclusively while the order remains in `PLACED` status.
+5. Admin Operational Control Center: Staff and admin portal at `/admin/orders` featuring live status tabs, order search, operational metric badges (New, In Preparation, Out for Delivery, Delivered), one-click quick progression actions, and detailed order review at `/admin/orders/[id]`.
+Reason: Ensures strict operational control for shop staff while delivering transparency to customers and protecting inventory counts.
+Status: Active
+
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions

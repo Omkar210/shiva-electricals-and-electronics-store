@@ -80,3 +80,10 @@ export async function requireRole(
 
   return profile;
 }
+
+/**
+ * Server guard: Ensures user has staff or admin role.
+ */
+export async function requireStaffOrAdmin(redirectTo = "/admin"): Promise<CurrentUserProfile> {
+  return requireRole(["admin", "staff"], redirectTo);
+}

@@ -241,11 +241,15 @@ Acceptance:
 
 ## T050 --- Customer order history
 
+Status: DONE
+
 -   List orders.
 -   Order detail.
 -   Status timeline.
 
 ## T051 --- Admin order management
+
+Status: DONE
 
 -   Search.
 -   Filter.
@@ -258,8 +262,11 @@ Acceptance:
 
 ## T052 --- Audit trail
 
+Status: DONE
+
 -   Record important status mutations.
 -   Record admin actions.
+
 
 ------------------------------------------------------------------------
 
