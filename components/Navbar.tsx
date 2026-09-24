@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCurrentProfile } from "@/lib/auth/roles";
+import { getCartItemCount } from "@/lib/cart/service";
 import {
   ShoppingBag,
   User,
@@ -10,7 +11,10 @@ import {
 } from "lucide-react";
 
 export default async function Navbar() {
-  const profile = await getCurrentProfile();
+  const [profile, cartCount] = await Promise.all([
+    getCurrentProfile(),
+    getCartItemCount(),
+  ]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur-md">
@@ -72,6 +76,11 @@ export default async function Navbar() {
             className="relative flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 hover:text-blue-600"
           >
             <ShoppingBag className="h-5 w-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white shadow-xs">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
           </Link>
 
           {/* User Account / Auth */}

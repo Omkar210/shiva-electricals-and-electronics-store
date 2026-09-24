@@ -201,6 +201,8 @@ Acceptance:
 
 ## T040 --- Cart
 
+Status: DONE
+
 -   Add.
 -   Remove.
 -   Quantity update.
@@ -209,12 +211,16 @@ Acceptance:
 
 ## T041 --- Delivery validation
 
+Status: DONE
+
 -   Pincode lookup.
 -   Delivery zone.
 -   Charge.
 -   ETA.
 
 ## T042 --- Order creation
+
+Status: DONE
 
 -   Validate customer.
 -   Validate products.

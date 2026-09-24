@@ -5,13 +5,13 @@ import type { Metadata } from "next";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog/products";
 import DeliveryCheck from "@/components/catalog/DeliveryCheck";
 import ProductCard from "@/components/catalog/ProductCard";
+import AddToCartButton from "@/components/catalog/AddToCartButton";
 import {
   Check,
   X,
   ShieldCheck,
   Wrench,
   PhoneCall,
-  ShoppingCart,
 } from "lucide-react";
 
 interface ProductPageProps {
@@ -174,21 +174,11 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           <DeliveryCheck />
 
           {/* Add to Cart & Checkout CTAs */}
-          <div id="order" className="space-y-3 pt-2">
-            <div className="flex gap-3">
-              <button
-                type="button"
-                disabled={!isInStock}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-sm transition-colors ${
-                  isInStock
-                    ? "bg-blue-600 hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600"
-                    : "cursor-not-allowed bg-gray-400"
-                }`}
-              >
-                <ShoppingCart className="h-4 w-4" />
-                {isInStock ? "Add to Cart" : "Currently Unavailable"}
-              </button>
-            </div>
+          <div id="order" className="pt-2">
+            <AddToCartButton
+              productId={product.id}
+              stockQuantity={product.stock_quantity}
+            />
           </div>
 
           {/* Assurance Badges */}

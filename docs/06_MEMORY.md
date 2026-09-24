@@ -270,6 +270,19 @@ Decision: Implement mobile-first catalog navigation per DESIGN.md:
 Reason: Maximizes local discovery, supports quick mobile purchasing decisions, and respects architectural caching rules.
 Status: Active
 
+## DEC-006 — Atomic Concurrency-Safe Order Creation & Cart Architecture
+
+Date: 2026-09-24
+Decision: Enforce strict transactional integrity across cart and order creation per Sections 12-15 of MASTER PROMPT:
+1. Authoritative Server-Side Calculation: The client sends only item IDs, quantities, and delivery address. The server re-fetches authoritative prices and active statuses from PostgreSQL, completely eliminating client-side price tampering.
+2. Concurrency-Safe Inventory Decrement: Implemented atomic PostgreSQL function `place_order_atomic` using conditional updates (`WHERE id = v_product_id AND stock_quantity >= v_qty AND is_active = true`). If stock is insufficient, the entire transaction aborts, preventing race conditions and negative inventory.
+3. Historical Data Snapshots: Order items store immutable snapshots (`product_name_snapshot`, `sku_snapshot`, `unit_price`, `quantity`, `subtotal`), and orders store `delivery_address_snapshot` as JSONB. Future catalog edits will never alter past order records.
+4. Comprehensive Audit Trail: Atomic insertion of initial order history (`order_status_history` -> 'PLACED') and inventory audit logs (`inventory_transactions` -> 'SALE').
+5. Unified Cart Storage: Uses an encrypted/HTTP-only cookie for guest sessions with seamless automatic sync to PostgreSQL `carts` & `cart_items` upon user login.
+6. Initial Payment Abstraction: Cash on Delivery / Pay on Delivery (COD/POD) for local fulfillment, designed to cleanly accept online payment gateway webhooks.
+Reason: Protects store financial and stock integrity under concurrent customer access.
+Status: Active
+
 ------------------------------------------------------------------------
 
 # 11. Open Questions

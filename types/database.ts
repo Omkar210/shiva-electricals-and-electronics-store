@@ -501,7 +501,21 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      place_order_atomic: {
+        Args: {
+          p_user_id: string | null;
+          p_order_number: string;
+          p_address_snapshot: Json;
+          p_subtotal: number;
+          p_delivery_fee: number;
+          p_discount: number;
+          p_total: number;
+          p_items: Json;
+        };
+        Returns: string;
+      };
+    };
     Enums: {
       user_role: UserRole;
       order_status: OrderStatus;
