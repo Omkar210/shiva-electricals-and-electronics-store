@@ -12,33 +12,27 @@
 
 ### Testing Runs & Pass/Fail Ratio
 - **Total Test Cases Executed**: 35
-- **Passed**: 32 (91.4%)
-- **Confirmed Bugs**: 4
+- **Initial Passed**: 32 (91.4%)
+- **Identified Bugs**: 4
+- **Resolved & Verified Bugs**: 4 (100% Fixed)
+- **Remaining Open Bugs**: 0 (0.0%)
 - **Critical Blockers (P0)**: 0
-- **Major Features Defective (P1)**: 1
+- **Major Features Defective (P1)**: 0 (Fixed)
 - **Important Defect with Workaround (P2)**: 0
-- **Minor Defect / Inconsistency (P3)**: 1
-- **Cosmetic / Visual / Semantic (P4)**: 2
-
-### Severity Distribution
-```
-[P0 - Blocker]   : 0  (0.0%)
-[P1 - Major]     : 1 (25.0%)
-[P2 - Important] : 0  (0.0%)
-[P3 - Minor]     : 1 (25.0%)
-[P4 - Cosmetic]  : 2 (50.0%)
-```
+- **Minor Defect / Inconsistency (P3)**: 0 (Fixed)
+- **Cosmetic / Visual / Semantic (P4)**: 0 (Fixed)
 
 ---
 
-## 2. Confirmed Defect Details
+## 2. Confirmed Defect Details & Resolutions
 
 ### BUG-001 [Severity: P1 — Major Feature / Setup Defect]
 - **Bug ID**: `BUG-SHIVA-001`
 - **Severity**: **P1 (Major)**
 - **Title**: Invalid Non-Hex Characters in UUID Primary Keys in `seed.sql` Breaks Database Migration & Seeding
 - **Target File / URL**: [seed.sql](file:///d:/learning/Shiva_Electrical/supabase/seed.sql#L42)
-- **Status**: **CONFIRMED BUG**
+- **Status**: **RESOLVED & VERIFIED**
+- **Fix Applied**: Updated all product primary keys to valid hex UUIDs (`a1000000-0000-0000-0000-000000000001` through `0006`) with unique category references.
 - **Evidence Path**: [qa/evidence/TEST-CONCURRENCY-01-report.json](file:///d:/learning/Shiva_Electrical/qa/evidence/TEST-CONCURRENCY-01-report.json)
 
 #### Reproduction Steps
@@ -80,7 +74,8 @@ As a result, no products were seeded, leaving the catalog at `/products` empty (
 - **Severity**: **P3 (Minor)**
 - **Title**: `generateMetadata` Sets Misleading "Confirmed" Title on Non-Existent Order 404 Pages
 - **Target File / URL**: [page.tsx](file:///d:/learning/Shiva_Electrical/app/checkout/confirmation/%5BorderNumber%5D/page.tsx#L19-L26) (`http://localhost:3000/checkout/confirmation/SE-NONEXISTENT-9999`)
-- **Status**: **CONFIRMED BUG**
+- **Status**: **RESOLVED & VERIFIED**
+- **Fix Applied**: Added asynchronous `getOrderByNumber(orderNumber)` existence verification inside `generateMetadata` for both `/checkout/confirmation/[orderNumber]` and `/orders/[orderNumber]`. Returns `"Order Not Found"` title whenever order record is absent.
 - **Evidence Path**: [qa/evidence/TEST-ADVERSARIAL-02-fake-order-meta-mismatch.png](file:///d:/learning/Shiva_Electrical/qa/evidence/TEST-ADVERSARIAL-02-fake-order-meta-mismatch.png)
 
 #### Reproduction Steps
@@ -113,7 +108,8 @@ The browser tab displays:
 - **Severity**: **P4 (Cosmetic / Accessibility)**
 - **Title**: Nested `<main>` Landmark Elements Violate HTML5 & WAI-ARIA Specifications
 - **Target File / URL**: [layout.tsx](file:///d:/learning/Shiva_Electrical/app/admin/layout.tsx#L95) and [layout.tsx](file:///d:/learning/Shiva_Electrical/app/layout.tsx#L41)
-- **Status**: **CONFIRMED BUG**
+- **Status**: **RESOLVED & VERIFIED**
+- **Fix Applied**: Replaced nested `<main>` landmark in `app/admin/layout.tsx` with standard container `<div>`, ensuring exactly one `<main>` landmark exists in the DOM.
 - **Evidence Path**: Playwright strict mode resolution log: `locator('main') resolved to 2 elements`
 
 #### Reproduction Steps
@@ -141,7 +137,8 @@ Two nested `<main>` landmark elements are rendered in the DOM. This causes:
 - **Severity**: **P4 (Cosmetic)**
 - **Title**: Missing Static `/favicon.ico` Generates Recurring 404 Console Errors
 - **Target URL**: `http://localhost:3000/favicon.ico`
-- **Status**: **CONFIRMED BUG**
+- **Status**: **RESOLVED & VERIFIED**
+- **Fix Applied**: Added dynamic Next.js icon generator (`app/icon.tsx`) with electrical & water theme via ImageResponse, and generated physical `public/favicon.ico` (32x32) asset for standard direct browser requests.
 - **Evidence Path**: [qa/evidence/TEST-SMOKE-console.log](file:///d:/learning/Shiva_Electrical/qa/evidence/TEST-SMOKE-console.log)
 
 #### Reproduction Steps

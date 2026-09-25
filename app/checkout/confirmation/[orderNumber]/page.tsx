@@ -20,6 +20,12 @@ export async function generateMetadata({
   params,
 }: ConfirmationPageProps): Promise<Metadata> {
   const { orderNumber } = await params;
+  const order = await getOrderByNumber(orderNumber);
+  if (!order) {
+    return {
+      title: "Order Not Found",
+    };
+  }
   return {
     title: `Order ${orderNumber} Confirmed`,
   };
