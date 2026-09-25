@@ -6,6 +6,8 @@ __pnp.*
 
 # testing
 /coverage
+/.playwright-mcp/
+/qa/evidence/
 
 # next.js
 /.next/

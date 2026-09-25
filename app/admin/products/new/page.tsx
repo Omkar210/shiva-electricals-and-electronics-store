@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { getCategories } from "@/lib/catalog/categories";
 import { createClient } from "@/lib/supabase/server";
+import { requireRole } from "@/lib/auth/roles";
 import { ArrowLeft } from "lucide-react";
 import ProductForm from "./ProductForm";
 
 export default async function NewProductPage() {
+  // Strictly enforce admin-only access; staff and customers cannot access this page
+  await requireRole(["admin"], "/admin/products");
+
   const supabase = await createClient();
   const [categories, { data: brands }] = await Promise.all([
     getCategories({ onlyActive: false }),

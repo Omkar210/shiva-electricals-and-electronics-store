@@ -227,3 +227,11 @@ export function canCustomerCancelOrder({
 
   return { canCancel: true };
 }
+
+/**
+ * Authoritative security check: Determines whether a user role is permitted to upload product media.
+ * Strictly permits only 'admin'. All other roles (staff, customer, guest) are rejected.
+ */
+export function canUploadProductMedia(role: string | null | undefined): boolean {
+  return role === "admin";
+}

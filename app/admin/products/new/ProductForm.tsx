@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { handleCreateProduct, type ProductActionResult } from "../actions";
 import type { CategoryItem } from "@/lib/catalog/categories";
-import { AlertCircle, Plus } from "lucide-react";
+import { AlertCircle, Plus, Image as ImageIcon } from "lucide-react";
 
 interface ProductFormProps {
   categories: CategoryItem[];
@@ -216,6 +216,32 @@ export default function ProductForm({ categories, brands }: ProductFormProps) {
               className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
             />
           </div>
+        </div>
+      </div>
+
+      {/* Product Image - Admin Access Only */}
+      <div className="space-y-4 border-t border-gray-100 pt-6">
+        <div className="flex items-center gap-2">
+          <ImageIcon className="h-4 w-4 text-gray-500" />
+          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
+            Product Media (Admin Access Only)
+          </h2>
+        </div>
+
+        <div>
+          <label htmlFor="file" className="block text-xs font-semibold text-gray-700">
+            Primary Product Image
+          </label>
+          <input
+            id="file"
+            name="file"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            className="mt-1 block w-full text-xs text-gray-600 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:py-2.5 file:text-xs file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
+          />
+          <p className="mt-1.5 text-[11px] text-gray-400">
+            Supported formats: JPEG, PNG, WebP, AVIF up to 10MB. Stored directly to Google Drive.
+          </p>
         </div>
       </div>
 

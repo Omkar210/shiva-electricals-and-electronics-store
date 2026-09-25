@@ -181,6 +181,11 @@ export interface Database {
           sort_order: number;
           is_primary: boolean;
           created_at: string;
+          storage_provider?: string;
+          external_id?: string | null;
+          file_size_bytes?: number | null;
+          mime_type?: string | null;
+          file_metadata?: Record<string, unknown> | null;
         };
         Insert: {
           id?: string;
@@ -190,6 +195,11 @@ export interface Database {
           sort_order?: number;
           is_primary?: boolean;
           created_at?: string;
+          storage_provider?: string;
+          external_id?: string | null;
+          file_size_bytes?: number | null;
+          mime_type?: string | null;
+          file_metadata?: Record<string, unknown> | null;
         };
         Update: {
           id?: string;
@@ -199,6 +209,11 @@ export interface Database {
           sort_order?: number;
           is_primary?: boolean;
           created_at?: string;
+          storage_provider?: string;
+          external_id?: string | null;
+          file_size_bytes?: number | null;
+          mime_type?: string | null;
+          file_metadata?: Record<string, unknown> | null;
         };
         Relationships: [];
       };

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth/roles";
 import { revalidatePath } from "next/cache";
+import { uploadProductImage } from "./media";
 
 export interface ProductImageRecord {
   id: string;
@@ -353,6 +354,16 @@ export async function createProduct(formData: FormData) {
       transaction_type: "PURCHASE",
       reason: "Initial stock upon product creation",
     });
+  }
+
+  // Admin-only: Process and upload product image if provided
+  const imageFile = formData.get("file") as File | null;
+  if (imageFile && imageFile.size > 0 && newProduct) {
+    const imageFormData = new FormData();
+    imageFormData.append("file", imageFile);
+    imageFormData.append("altText", name);
+    imageFormData.append("isPrimary", "true");
+    await uploadProductImage(newProduct.id, imageFormData);
   }
 
   revalidatePath("/", "layout");

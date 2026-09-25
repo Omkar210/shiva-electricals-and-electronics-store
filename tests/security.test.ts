@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   canCustomerCancelOrder,
   calculateOrderFinancials,
+  canUploadProductMedia,
 } from "../lib/business-rules.ts";
 
 describe("Security & Authorization Guardrails", () => {
@@ -114,6 +115,27 @@ describe("Security & Authorization Guardrails", () => {
       assert.equal(result.subtotal, 200);
       assert.equal(result.discount, 200); // Capped at subtotal
       assert.equal(result.total, 50); // Subtotal(200) - Disc(200) + Del(50) = 50
+    });
+  });
+
+  describe("Media Upload Role Authorization", () => {
+    it("strictly allows admin role to upload media", () => {
+      assert.equal(canUploadProductMedia("admin"), true);
+    });
+
+    it("blocks staff role from uploading media", () => {
+      assert.equal(canUploadProductMedia("staff"), false);
+    });
+
+    it("blocks customer role from uploading media", () => {
+      assert.equal(canUploadProductMedia("customer"), false);
+    });
+
+    it("blocks unauthenticated or undefined roles from uploading media", () => {
+      assert.equal(canUploadProductMedia(undefined), false);
+      assert.equal(canUploadProductMedia(null), false);
+      assert.equal(canUploadProductMedia("guest"), false);
+      assert.equal(canUploadProductMedia(""), false);
     });
   });
 });
