@@ -164,3 +164,12 @@ export async function deleteProductImage(imageId: string, storagePath: string) {
 
   revalidatePath("/", "layout");
 }
+
+// Re-export Drive Admin Server Actions
+export {
+  getDriveFilesAction,
+  importDriveFileAction,
+  syncAllDriveImagesByProductIdAction,
+} from "@/app/admin/products/media-actions";
+
+

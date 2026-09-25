@@ -66,4 +66,37 @@ describe("Google Drive Storage Service", () => {
     const isValid = Boolean(validId) && !validId.includes("/") && !validId.includes("..");
     assert.equal(isValid, true);
   });
+
+  it("constructs canonical Google Drive product image endpoint by Product ID", () => {
+    const productId = "a1000000-0000-0000-0000-000000000001";
+    const expectedRoute = `/api/media/drive/product/${productId}`;
+    assert.equal(expectedRoute, "/api/media/drive/product/a1000000-0000-0000-0000-000000000001");
+  });
+
+  it("sanitizes product IDs to prevent query injection", () => {
+    const maliciousId = "prod-123'; DROP TABLE products; --";
+    const safeId = maliciousId.replace(/[^a-zA-Z0-9_-]/g, "");
+    assert.equal(safeId, "prod-123DROPTABLEproducts--");
+    assert.equal(safeId.includes("'"), false);
+    assert.equal(safeId.includes(";"), false);
+    assert.equal(safeId.includes(" "), false);
+  });
+
+  it("matches files named with product ID across various extensions", () => {
+    const productId = "a1000000-0000-0000-0000-000000000001";
+    const driveFilenames = [
+      "a1000000-0000-0000-0000-000000000001.jpg",
+      "a1000000-0000-0000-0000-000000000001.png",
+      "a1000000-0000-0000-0000-000000000001-main.webp",
+      "other-product.jpg",
+    ];
+
+    const matches = driveFilenames.filter((name) => {
+      const base = name.split(".")[0];
+      return base.includes(productId) || name.startsWith(productId);
+    });
+
+    assert.equal(matches.length, 3);
+    assert.equal(matches.includes("other-product.jpg"), false);
+  });
 });

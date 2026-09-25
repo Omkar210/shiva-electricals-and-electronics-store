@@ -167,10 +167,11 @@ export async function getProducts(options: ProductQueryOptions = {}): Promise<{ 
     return { products: [], total: 0 };
   }
 
-  // Map primary image helper
+  // Map primary image helper - Google Drive as primary storage
   const products: ProductItem[] = ((data as unknown as ProductQueryResult[]) || []).map((item) => {
     const images = item.product_images || [];
-    const primary = images.find((img) => img.is_primary)?.storage_path || images[0]?.storage_path || null;
+    const driveImage = images.find((img) => img.storage_path?.includes("/api/media/drive/"));
+    const primary = driveImage?.storage_path || `/api/media/drive/product/${item.id}`;
     return {
       ...item,
       categories: item.categories,
@@ -222,7 +223,8 @@ export async function getProductBySlug(slug: string): Promise<ProductItem | null
 
   const raw = data as unknown as ProductQueryResult;
   const images = raw.product_images || [];
-  const primary = images.find((img) => img.is_primary)?.storage_path || images[0]?.storage_path || null;
+  const driveImage = images.find((img) => img.storage_path?.includes("/api/media/drive/"));
+  const primary = driveImage?.storage_path || `/api/media/drive/product/${raw.id}`;
 
   return {
     ...raw,
@@ -284,7 +286,8 @@ export async function getRelatedProducts(productId: string, categoryId: string |
 
   return ((data as unknown as ProductQueryResult[]) || []).map((item) => {
     const images = item.product_images || [];
-    const primary = images.find((img) => img.is_primary)?.storage_path || images[0]?.storage_path || null;
+    const driveImage = images.find((img) => img.storage_path?.includes("/api/media/drive/"));
+    const primary = driveImage?.storage_path || `/api/media/drive/product/${item.id}`;
     return {
       ...item,
       categories: item.categories,
@@ -356,14 +359,31 @@ export async function createProduct(formData: FormData) {
     });
   }
 
-  // Admin-only: Process and upload product image if provided
-  const imageFile = formData.get("file") as File | null;
-  if (imageFile && imageFile.size > 0 && newProduct) {
-    const imageFormData = new FormData();
-    imageFormData.append("file", imageFile);
-    imageFormData.append("altText", name);
-    imageFormData.append("isPrimary", "true");
-    await uploadProductImage(newProduct.id, imageFormData);
+  // Admin-only: Link Google Drive image if selected from Drive picker
+  const driveFileId = formData.get("driveFileId") as string | null;
+  const driveFileName = formData.get("driveFileName") as string | null;
+
+  if (driveFileId && newProduct) {
+    await supabase.from("product_images").insert({
+      product_id: newProduct.id,
+      storage_path: `/api/media/drive/product/${newProduct.id}`,
+      alt_text: driveFileName || name,
+      is_primary: true,
+      sort_order: 0,
+      storage_provider: "google_drive",
+      external_id: driveFileId,
+      file_metadata: { drive_file_id: driveFileId, drive_file_name: driveFileName },
+    });
+  } else {
+    // Process and upload product image if file provided
+    const imageFile = formData.get("file") as File | null;
+    if (imageFile && imageFile.size > 0 && newProduct) {
+      const imageFormData = new FormData();
+      imageFormData.append("file", imageFile);
+      imageFormData.append("altText", name);
+      imageFormData.append("isPrimary", "true");
+      await uploadProductImage(newProduct.id, imageFormData);
+    }
   }
 
   revalidatePath("/", "layout");

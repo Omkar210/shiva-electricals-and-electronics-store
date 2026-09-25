@@ -164,8 +164,8 @@ export async function getCart(): Promise<CartState> {
   const productMap = new Map<string, ProductItem>();
   for (const item of (productsData || []) as unknown as ProductQueryResult[]) {
     const images = item.product_images || [];
-    const primary =
-      images.find((img) => img.is_primary)?.storage_path || images[0]?.storage_path || null;
+    const driveImage = images.find((img) => img.storage_path?.includes("/api/media/drive/"));
+    const primary = driveImage?.storage_path || `/api/media/drive/product/${item.id}`;
     productMap.set(item.id, {
       ...item,
       primary_image: primary,

@@ -166,6 +166,86 @@ export async function getGoogleDriveFileStream(
   };
 }
 
+export interface DriveFolderFile {
+  id: string;
+  name: string;
+  mimeType: string;
+  sizeBytes?: number;
+  webViewLink?: string;
+  thumbnailLink?: string;
+  proxyUrl: string;
+}
+
+/**
+ * Lists all files in the configured Google Drive folder.
+ */
+export async function listFilesInDriveFolder(folderId?: string): Promise<DriveFolderFile[]> {
+  const drive = getGoogleDriveClient();
+  const targetFolderId = folderId || process.env.GOOGLE_DRIVE_FOLDER_ID;
+
+  if (!targetFolderId) {
+    throw new Error("No Google Drive folder ID configured.");
+  }
+
+  const res = await drive.files.list({
+    q: `'${targetFolderId}' in parents and trashed = false`,
+    fields: "files(id, name, mimeType, size, webViewLink, thumbnailLink)",
+    orderBy: "modifiedTime desc",
+    pageSize: 100,
+  });
+
+  return (res.data.files || []).map((f) => ({
+    id: f.id!,
+    name: f.name || "Untitled",
+    mimeType: f.mimeType || "application/octet-stream",
+    sizeBytes: f.size ? parseInt(f.size, 10) : undefined,
+    webViewLink: f.webViewLink || undefined,
+    thumbnailLink: f.thumbnailLink || undefined,
+    proxyUrl: `/api/media/drive/${f.id}`,
+  }));
+}
+
+/**
+ * Searches for a file in the Google Drive folder whose name matches or starts with the product ID.
+ */
+export async function findDriveFileByProductId(
+  productId: string,
+  folderId?: string,
+): Promise<DriveFolderFile | null> {
+  const drive = getGoogleDriveClient();
+  const targetFolderId = folderId || process.env.GOOGLE_DRIVE_FOLDER_ID;
+
+  if (!targetFolderId || !productId) {
+    return null;
+  }
+
+  // Sanitize productId to prevent query injection
+  const safeId = productId.replace(/[^a-zA-Z0-9_-]/g, "");
+
+  const res = await drive.files.list({
+    q: `'${targetFolderId}' in parents and trashed = false and name contains '${safeId}'`,
+    fields: "files(id, name, mimeType, size, webViewLink, thumbnailLink)",
+    pageSize: 5,
+  });
+
+  const matched = (res.data.files || []).find((f) => {
+    const nameWithoutExt = f.name?.split(".")[0] || "";
+    return nameWithoutExt.includes(safeId) || f.name?.startsWith(safeId);
+  });
+
+  if (!matched || !matched.id) return null;
+
+  return {
+    id: matched.id,
+    name: matched.name || "Untitled",
+    mimeType: matched.mimeType || "image/jpeg",
+    sizeBytes: matched.size ? parseInt(matched.size, 10) : undefined,
+    webViewLink: matched.webViewLink || undefined,
+    thumbnailLink: matched.thumbnailLink || undefined,
+    proxyUrl: `/api/media/drive/${matched.id}`,
+  };
+}
+
 /**
  * Deletes a file from Google Drive permanently.
  */
@@ -182,3 +262,4 @@ export async function deleteFromGoogleDrive(fileId: string): Promise<void> {
     }
   }
 }
+

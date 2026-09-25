@@ -1,10 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState, useActionState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { handleCreateProduct, type ProductActionResult } from "../actions";
 import type { CategoryItem } from "@/lib/catalog/categories";
-import { AlertCircle, Plus, Image as ImageIcon } from "lucide-react";
+import DriveMediaPickerModal from "@/components/admin/DriveMediaPickerModal";
+import { AlertCircle, Plus, HardDrive, Check, X } from "lucide-react";
 
 interface ProductFormProps {
   categories: CategoryItem[];
@@ -16,6 +18,12 @@ export default function ProductForm({ categories, brands }: ProductFormProps) {
     handleCreateProduct,
     null,
   );
+  const [isDriveModalOpen, setIsDriveModalOpen] = useState(false);
+  const [selectedDriveFile, setSelectedDriveFile] = useState<{
+    id: string;
+    name: string;
+    proxyUrl: string;
+  } | null>(null);
 
   return (
     <form
@@ -219,18 +227,67 @@ export default function ProductForm({ categories, brands }: ProductFormProps) {
         </div>
       </div>
 
-      {/* Product Image - Admin Access Only */}
+      {/* Product Image - Google Drive Primary Storage */}
       <div className="space-y-4 border-t border-gray-100 pt-6">
-        <div className="flex items-center gap-2">
-          <ImageIcon className="h-4 w-4 text-gray-500" />
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
-            Product Media (Admin Access Only)
-          </h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <HardDrive className="h-4 w-4 text-blue-600" />
+            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
+              Product Media (Google Drive Primary Storage)
+            </h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsDriveModalOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100"
+          >
+            <HardDrive className="h-3.5 w-3.5" />
+            <span>Select from Google Drive</span>
+          </button>
         </div>
+
+        {selectedDriveFile ? (
+          <div className="flex items-center gap-4 rounded-xl border border-blue-200 bg-blue-50/50 p-3">
+            <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-slate-200 bg-white">
+              <Image
+                src={selectedDriveFile.proxyUrl}
+                alt={selectedDriveFile.name}
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5 text-green-600" />
+                <span className="text-xs font-bold text-gray-900">Google Drive Image Selected</span>
+              </div>
+              <p className="truncate text-xs text-gray-600 font-mono mt-0.5">{selectedDriveFile.name}</p>
+              <input type="hidden" name="driveFileId" value={selectedDriveFile.id} />
+              <input type="hidden" name="driveFileName" value={selectedDriveFile.name} />
+            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedDriveFile(null)}
+              className="rounded-lg p-1.5 text-gray-400 hover:bg-white hover:text-gray-700"
+              title="Remove selected image"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-gray-300 p-4 bg-gray-50/50 text-xs text-gray-500">
+            <p className="font-medium text-gray-700">How Google Drive product images work:</p>
+            <ul className="mt-1 list-disc list-inside space-y-1 text-gray-500">
+              <li>You can click <strong>Select from Google Drive</strong> above to choose any image in the drive folder.</li>
+              <li>Or after creating the product, name your image <code>[product-id].jpg</code> in Google Drive and it will automatically be detected and served.</li>
+            </ul>
+          </div>
+        )}
 
         <div>
           <label htmlFor="file" className="block text-xs font-semibold text-gray-700">
-            Primary Product Image
+            Or Upload New Photo
           </label>
           <input
             id="file"
@@ -239,11 +296,21 @@ export default function ProductForm({ categories, brands }: ProductFormProps) {
             accept="image/jpeg,image/png,image/webp,image/avif"
             className="mt-1 block w-full text-xs text-gray-600 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-blue-50 file:px-4 file:py-2.5 file:text-xs file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
           />
-          <p className="mt-1.5 text-[11px] text-gray-400">
-            Supported formats: JPEG, PNG, WebP, AVIF up to 10MB. Stored directly to Google Drive.
-          </p>
         </div>
       </div>
+
+      {/* Drive Picker Modal */}
+      <DriveMediaPickerModal
+        isOpen={isDriveModalOpen}
+        onClose={() => setIsDriveModalOpen(false)}
+        onSelectImage={(file) => {
+          setSelectedDriveFile({
+            id: file.id,
+            name: file.name,
+            proxyUrl: file.proxyUrl,
+          });
+        }}
+      />
 
       {/* Form Action Buttons */}
       <div className="flex items-center justify-end gap-3 border-t border-gray-100 pt-6">
