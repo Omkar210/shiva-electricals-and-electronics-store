@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { saveDeliveryZoneAction } from "./actions";
 import type { DeliveryZoneRecord } from "@/lib/checkout/delivery";
-import { MapPin, X, Loader2 } from "lucide-react";
+import { Dialog } from "@/components/ui/dialog";
+import { Loader2 } from "lucide-react";
 
 interface DeliveryZoneModalProps {
   zone: DeliveryZoneRecord | null;
@@ -27,8 +28,6 @@ export function DeliveryZoneModal({
   const [isActive, setIsActive] = useState(zone?.is_active ?? true);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,44 +64,24 @@ export function DeliveryZoneModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-      <div className="w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-xl space-y-5">
-        {/* Header */}
-        <div className="flex items-start justify-between border-b border-gray-100 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
-              <MapPin className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900">
-                {zone ? "Edit Delivery Zone" : "Add Service Pincode"}
-              </h3>
-              <p className="text-xs text-gray-500">
-                Configure delivery rates, dispatch timelines, and minimum order values.
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 cursor-pointer"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title={zone ? "Edit Delivery Zone" : "Add Serviceable Pincode"}
+      description="Configure delivery charge, estimated time, and minimum order rules."
+    >
+      <div className="space-y-5">
         {error && (
-          <div className="rounded-xl bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+          <div className="rounded-xl bg-red-50 p-4 text-sm font-semibold text-red-900 border-2 border-red-200">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Pincode & Town */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label htmlFor="pincode-input" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="pincode-input" className="block text-sm font-bold text-slate-800">
                 Pincode (6-digit) *
               </label>
               <input
@@ -113,12 +92,12 @@ export function DeliveryZoneModal({
                 value={pincode}
                 onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
                 placeholder="e.g. 413001"
-                className="w-full rounded-xl border border-gray-300 p-2.5 font-mono text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                className="w-full rounded-lg border-2 border-slate-300 p-3 font-mono text-base font-bold text-slate-900 focus:border-blue-700 focus:outline-none"
               />
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="town-input" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="town-input" className="block text-sm font-bold text-slate-800">
                 Town / City Name *
               </label>
               <input
@@ -128,30 +107,30 @@ export function DeliveryZoneModal({
                 value={town}
                 onChange={(e) => setTown(e.target.value)}
                 placeholder="e.g. Solapur Central"
-                className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                className="w-full rounded-lg border-2 border-slate-300 p-3 text-base text-slate-900 focus:border-blue-700 focus:outline-none"
               />
             </div>
           </div>
 
           {/* Zone Classification */}
           <div className="space-y-1">
-            <label htmlFor="zone-class" className="block text-xs font-semibold text-gray-700">
-              Zone Cluster / Classification
+            <label htmlFor="zone-class" className="block text-sm font-bold text-slate-800">
+              Zone Area / Cluster Name
             </label>
             <input
               id="zone-class"
               type="text"
               value={zoneName}
               onChange={(e) => setZoneName(e.target.value)}
-              placeholder="e.g. Direct Local Zone, Outer Town, Industrial Area"
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+              placeholder="e.g. Direct Local Zone, Outer Ring Road"
+              className="w-full rounded-lg border-2 border-slate-300 p-3 text-base text-slate-900 focus:border-blue-700 focus:outline-none"
             />
           </div>
 
           {/* Delivery Charge & Minimum Order */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label htmlFor="charge-input" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="charge-input" className="block text-sm font-bold text-slate-800">
                 Delivery Charge (₹)
               </label>
               <input
@@ -160,13 +139,13 @@ export function DeliveryZoneModal({
                 min="0"
                 value={deliveryCharge}
                 onChange={(e) => setDeliveryCharge(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                className="w-full rounded-lg border-2 border-slate-300 p-3 text-base font-bold text-slate-900 focus:border-blue-700 focus:outline-none"
               />
-              <span className="text-[10px] text-gray-400">Set 0 for Free Delivery</span>
+              <span className="text-xs text-slate-500">Set 0 for Free Delivery</span>
             </div>
 
             <div className="space-y-1">
-              <label htmlFor="min-order-input" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="min-order-input" className="block text-sm font-bold text-slate-800">
                 Minimum Order Value (₹)
               </label>
               <input
@@ -175,48 +154,48 @@ export function DeliveryZoneModal({
                 min="0"
                 value={minimumOrder}
                 onChange={(e) => setMinimumOrder(Math.max(0, parseFloat(e.target.value) || 0))}
-                className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+                className="w-full rounded-lg border-2 border-slate-300 p-3 text-base font-bold text-slate-900 focus:border-blue-700 focus:outline-none"
               />
-              <span className="text-[10px] text-gray-400">0 for no minimum restriction</span>
+              <span className="text-xs text-slate-500">0 for no minimum restriction</span>
             </div>
           </div>
 
           {/* Estimated Delivery Timeline */}
           <div className="space-y-1">
-            <label htmlFor="eta-input" className="block text-xs font-semibold text-gray-700">
-              Estimated Delivery SLA / Window
+            <label htmlFor="eta-input" className="block text-sm font-bold text-slate-800">
+              Estimated Delivery Timeframe
             </label>
             <input
               id="eta-input"
               type="text"
               value={estimatedDelivery}
               onChange={(e) => setEstimatedDelivery(e.target.value)}
-              placeholder="e.g. Same-day (within 2-4 hours), Next-day 11 AM"
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+              placeholder="e.g. Same-day (within 2-4 hours)"
+              className="w-full rounded-lg border-2 border-slate-300 p-3 text-base text-slate-900 focus:border-blue-700 focus:outline-none"
             />
           </div>
 
           {/* Active Status Checkbox */}
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex items-center gap-3 pt-2">
             <input
               type="checkbox"
               id="active-check"
               checked={isActive}
               onChange={(e) => setIsActive(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+              className="h-5 w-5 rounded border-slate-400 text-blue-700 focus:ring-blue-700 cursor-pointer"
             />
-            <label htmlFor="active-check" className="text-xs font-medium text-gray-700 cursor-pointer">
-              Active Zone (Allow storefront checkout and delivery verification)
+            <label htmlFor="active-check" className="text-sm font-bold text-slate-800 cursor-pointer">
+              Active Zone (Enable checkout and verification for this pincode)
             </label>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending}
-              className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 cursor-pointer"
+              className="h-11 rounded-lg border-2 border-slate-300 px-5 text-sm font-bold text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
             >
               Cancel
             </button>
@@ -224,20 +203,20 @@ export function DeliveryZoneModal({
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2 text-xs font-bold text-white shadow-xs hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+              className="inline-flex h-11 items-center gap-2 rounded-lg bg-blue-700 px-6 text-sm font-bold text-white shadow-xs hover:bg-blue-800 disabled:opacity-50 cursor-pointer transition-colors"
             >
               {isPending ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Saving...
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Saving...</span>
                 </>
               ) : (
-                zone ? "Save Changes" : "Create Delivery Zone"
+                <span>{zone ? "Save Changes" : "Create Delivery Zone"}</span>
               )}
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </Dialog>
   );
 }

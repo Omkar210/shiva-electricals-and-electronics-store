@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Clock,
   Sparkles,
+  PhoneCall,
 } from "lucide-react";
 
 export default async function HomePage() {
@@ -23,112 +24,116 @@ export default async function HomePage() {
   const services = [
     {
       icon: Wrench,
-      title: "Installation Services",
+      title: "Doorstep Installation & Demo",
       description:
-        "Professional doorstep installation and demo for RO purifiers and ceiling fans by verified local technicians.",
+        "Professional installation and unboxing for RO water purifiers and ceiling fans by certified local technicians.",
       highlight: "Same-Day Available",
     },
     {
       icon: ShieldCheck,
       title: "Annual Maintenance (AMC)",
       description:
-        "Comprehensive annual maintenance plans with scheduled filter changes, membrane check, and priority repair visits.",
-      highlight: "Periodic Care",
+        "Worry-free yearly maintenance plans covering filter cartridge replacements, membrane checks, and priority visits.",
+      highlight: "Scheduled Care",
     },
     {
       icon: Droplet,
-      title: "Water Quality & TDS Testing",
+      title: "Free Water TDS & Purity Testing",
       description:
-        "Free TDS and water quality testing to ensure your family drinks 100% pure, safe, and mineral-balanced water.",
-      highlight: "Free Testing",
+        "Complimentary water TDS check during every delivery to ensure your drinking water is 100% healthy and pure.",
+      highlight: "Free with Order",
     },
     {
       icon: Clock,
-      title: "Repairs & Genuine Spares",
+      title: "Quick Repairs & Genuine Spares",
       description:
-        "Quick troubleshooting, pump repair, and genuine sediment/carbon/membrane filter replacements for all brands.",
+        "Immediate troubleshooting, booster pump repair, and genuine sediment/carbon/membrane filter replacements.",
       highlight: "Genuine Spares",
     },
   ];
 
   return (
-    <div className="space-y-16 pb-16 sm:space-y-20">
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/60 via-white to-white py-12 sm:py-20">
+    <div className="space-y-16 pb-20 sm:space-y-24">
+      {/* 1. Hero Section - Senior-Friendly, Trustworthy, High Contrast */}
+      <section className="border-b-2 border-slate-200 bg-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            {/* Left Content Column */}
             <div className="space-y-6 lg:col-span-7">
-              <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700">
-                <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-                <span>Your Trusted Local Electrical &amp; Water Purification Store</span>
+              <div className="inline-flex items-center gap-2 rounded-lg border-2 border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-bold text-blue-900">
+                <Sparkles className="h-4 w-4 text-blue-700" />
+                <span>Authorized Local Dealer &amp; Certified Service Store</span>
               </div>
 
-              <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-5xl sm:leading-tight">
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl sm:leading-tight">
                 Pure Drinking Water &amp;{" "}
-                <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-                  Reliable Electricals
+                <span className="text-blue-700">
+                  Reliable Home Electricals
                 </span>
               </h1>
 
-              <p className="max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
-                Discover certified RO water purifiers, genuine replacement spare parts, energy-efficient fans, and home electrical supplies. Fast delivery to your doorstep in town and nearby areas.
+              <p className="max-w-2xl text-base sm:text-lg leading-relaxed text-slate-700">
+                Buy genuine RO water purifiers, original replacement filter cartridges, ceiling fans, and electrical supplies with direct doorstep delivery and certified technician installation.
               </p>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              {/* 48px Action Buttons */}
+              <div className="flex flex-col gap-3.5 sm:flex-row sm:items-center pt-2">
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600"
+                  className="flex h-13 items-center justify-center gap-2 rounded-lg bg-blue-700 px-7 text-base sm:text-lg font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 transition-colors"
                 >
-                  Explore Catalog
-                  <ArrowRight className="h-4 w-4" />
+                  <span>Explore Product Catalog</span>
+                  <ArrowRight className="h-5 w-5" />
                 </Link>
 
-                <Link
-                  href="#services"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3.5 text-sm font-semibold text-gray-700 shadow-xs hover:bg-gray-50"
+                <a
+                  href="tel:+919876543210"
+                  className="flex h-13 items-center justify-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-6 text-base sm:text-lg font-bold text-slate-800 hover:bg-slate-50 hover:border-slate-400 transition-colors"
                 >
-                  Our Installation &amp; AMC Services
-                </Link>
+                  <PhoneCall className="h-5 w-5 text-blue-700" />
+                  <span>Call Shop for Help</span>
+                </a>
               </div>
 
-              {/* Trust Points */}
-              <div className="grid grid-cols-3 gap-4 border-t border-gray-100 pt-6">
-                <div>
-                  <div className="text-xl font-bold text-blue-600 sm:text-2xl">100%</div>
-                  <div className="text-xs text-gray-500">Genuine Spares</div>
+              {/* Trust Reassurance Badges */}
+              <div className="grid grid-cols-3 gap-4 border-t-2 border-slate-100 pt-6">
+                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
+                  <div className="text-xl sm:text-2xl font-black text-blue-700">100%</div>
+                  <div className="text-sm font-bold text-slate-700">Original Spares</div>
                 </div>
-                <div>
-                  <div className="text-xl font-bold text-blue-600 sm:text-2xl">Doorstep</div>
-                  <div className="text-xs text-gray-500">Installation</div>
+                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
+                  <div className="text-xl sm:text-2xl font-black text-blue-700">Doorstep</div>
+                  <div className="text-sm font-bold text-slate-700">Technician Setup</div>
                 </div>
-                <div>
-                  <div className="text-xl font-bold text-blue-600 sm:text-2xl">Local</div>
-                  <div className="text-xs text-gray-500">Fast Delivery</div>
+                <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
+                  <div className="text-xl sm:text-2xl font-black text-blue-700">Local</div>
+                  <div className="text-sm font-bold text-slate-700">Fast Delivery</div>
                 </div>
               </div>
             </div>
 
-            {/* Local Delivery Quick Checker in Hero */}
+            {/* Right Column: Local Delivery Checker */}
             <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-lg shadow-gray-100/60">
-                <div className="mb-4">
-                  <h3 className="text-base font-bold text-gray-900">
-                    Local Service Area Check
+              <div className="rounded-2xl border-2 border-slate-200 bg-slate-50 p-6 sm:p-7 shadow-sm space-y-4">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">
+                    Verify Your Delivery Area
                   </h3>
-                  <p className="mt-1 text-xs text-gray-500">
-                    Enter your pincode to verify local doorstep delivery and installation in your sector or town.
+                  <p className="mt-1 text-sm text-slate-600">
+                    Enter your postal pincode below to check delivery time, fee, and available technician visits.
                   </p>
                 </div>
+
                 <DeliveryCheck />
 
-                <div className="mt-5 space-y-2 border-t border-gray-100 pt-4 text-xs text-gray-600">
+                <div className="space-y-2 border-t-2 border-slate-200 pt-4 text-sm font-medium text-slate-700">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                    <span>Same-day delivery available for central zones</span>
+                    <CheckCircle2 className="h-4 w-4 text-blue-700 shrink-0" />
+                    <span>Same-day doorstep delivery for central zones</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-blue-600 shrink-0" />
-                    <span>Free water TDS testing during delivery</span>
+                    <CheckCircle2 className="h-4 w-4 text-blue-700 shrink-0" />
+                    <span>Complimentary water TDS check on delivery</span>
                   </div>
                 </div>
               </div>
@@ -139,25 +144,25 @@ export default async function HomePage() {
 
       {/* 2. Product Categories */}
       <section id="categories" className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-b-2 border-slate-200 pb-4">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
               Shop by Category
             </h2>
-            <p className="text-xs text-gray-500 sm:text-sm">
-              Explore our core product lines with authoritative specs and pricing
+            <p className="text-base text-slate-600 mt-1">
+              Select a category to view genuine products with transparent store pricing
             </p>
           </div>
 
           <Link
             href="/products"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline sm:text-sm"
+            className="inline-flex items-center gap-1.5 text-base font-bold text-blue-700 hover:underline"
           >
-            View All Categories &rarr;
+            <span>View All Categories &rarr;</span>
           </Link>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {categories.map((cat) => (
             <CategoryCard key={cat.id} category={cat} />
           ))}
@@ -166,22 +171,22 @@ export default async function HomePage() {
 
       {/* 3. Featured Products */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between border-b-2 border-slate-200 pb-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-blue-600">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Recommended Picks</span>
+            <div className="inline-flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-blue-700">
+              <Sparkles className="h-4 w-4" />
+              <span>Recommended by Our Technicians</span>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-              Featured Products
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl mt-1">
+              Featured Store Products
             </h2>
           </div>
 
           <Link
             href="/products"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline sm:text-sm"
+            className="inline-flex items-center gap-1.5 text-base font-bold text-blue-700 hover:underline"
           >
-            Browse All Products &rarr;
+            <span>Browse All Products &rarr;</span>
           </Link>
         </div>
 
@@ -192,15 +197,15 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Service Offerings (Learned from AquaPure Reference) */}
-      <section id="services" className="border-y border-gray-200 bg-gray-50/70 py-16">
+      {/* 4. Service Offerings */}
+      <section id="services" className="border-y-2 border-slate-200 bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-              Our Certified Services
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+              Certified Technician Services
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-xs text-gray-500 sm:text-sm">
-              We do not just sell purifiers and electricals — our verified shop technicians handle complete setup, testing, and maintenance.
+            <p className="text-base text-slate-600">
+              We provide complete doorstep setup, periodic water quality checks, and replacement services for your peace of mind.
             </p>
           </div>
 
@@ -210,28 +215,34 @@ export default async function HomePage() {
               return (
                 <div
                   key={idx}
-                  className="flex flex-col justify-between rounded-2xl border border-gray-200 bg-white p-6 shadow-xs"
+                  className="flex flex-col justify-between rounded-xl border-2 border-slate-200 bg-slate-50 p-6 shadow-2xs hover:border-blue-400 transition-colors"
                 >
-                  <div>
+                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                        <Icon className="h-6 w-6" />
+                      <div className="flex h-13 w-13 items-center justify-center rounded-xl bg-blue-100 text-blue-800">
+                        <Icon className="h-7 w-7" />
                       </div>
-                      <span className="rounded-full bg-blue-100/70 px-2.5 py-0.5 text-[11px] font-bold text-blue-800">
+                      <span className="rounded-full bg-blue-50 border border-blue-300 px-3 py-1 text-xs font-bold text-blue-900">
                         {svc.highlight}
                       </span>
                     </div>
 
-                    <h3 className="mt-4 text-base font-bold text-gray-900">
+                    <h3 className="text-lg font-bold text-slate-900">
                       {svc.title}
                     </h3>
-                    <p className="mt-2 text-xs leading-relaxed text-gray-600">
+                    <p className="text-sm sm:text-base leading-relaxed text-slate-700">
                       {svc.description}
                     </p>
                   </div>
 
-                  <div className="mt-6 border-t border-gray-100 pt-4 text-xs font-semibold text-blue-600">
-                    Contact Store for Booking
+                  <div className="mt-6 border-t border-slate-200 pt-4">
+                    <a
+                      href="tel:+919876543210"
+                      className="inline-flex items-center gap-1.5 text-sm font-bold text-blue-700 hover:underline"
+                    >
+                      <PhoneCall className="h-4 w-4" />
+                      <span>Call to Book Service</span>
+                    </a>
                   </div>
                 </div>
               );
@@ -240,30 +251,31 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Local Trust & Store Support Banner */}
+      {/* 5. Direct Assistance Banner - Clear and Reassuring */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-800 p-8 text-white shadow-xl sm:p-12">
+        <div className="rounded-2xl border-2 border-blue-300 bg-blue-900 p-8 sm:p-12 text-white shadow-md">
           <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
-            <div className="space-y-4 lg:col-span-8">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Need Help Finding the Right Filter or Electrical Part?
+            <div className="space-y-3 lg:col-span-8">
+              <h2 className="text-2xl font-black tracking-tight sm:text-3xl text-white">
+                Not Sure Which Filter or Spare Part Fits Your Machine?
               </h2>
-              <p className="text-xs leading-relaxed text-blue-100 sm:text-sm">
-                Unsure if a replacement RO membrane or sediment candle fits your water purifier model? Or need guidance on ceiling fan sizing? Our local shop technicians are ready to assist.
+              <p className="text-base sm:text-lg leading-relaxed text-blue-100">
+                You do not need to guess! Take a photo of your water purifier or fan model and call or WhatsApp our store technicians directly. We will confirm the exact matching part for you.
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:justify-end">
+              <a
+                href="tel:+919876543210"
+                className="flex h-12 items-center justify-center gap-2 rounded-lg bg-amber-400 px-6 text-base font-bold text-slate-950 hover:bg-amber-300 transition-colors shadow-sm"
+              >
+                <PhoneCall className="h-5 w-5" />
+                <span>Call +91 98765 43210</span>
+              </a>
               <Link
                 href="/products?category=ro-spare-parts"
-                className="inline-flex items-center justify-center rounded-xl bg-white px-6 py-3 text-xs font-bold text-blue-800 shadow-sm hover:bg-blue-50"
+                className="flex h-12 items-center justify-center rounded-lg border-2 border-white/50 bg-blue-800 px-6 text-base font-bold text-white hover:bg-blue-700 transition-colors"
               >
-                Browse RO Spares
-              </Link>
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center rounded-xl border border-white/30 px-6 py-3 text-xs font-semibold text-white hover:bg-white/10"
-              >
-                View Full Store
+                <span>Browse Filters</span>
               </Link>
             </div>
           </div>

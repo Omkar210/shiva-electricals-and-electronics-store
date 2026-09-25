@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { handleAddToCart } from "@/app/cart/actions";
-import { ShoppingCart, Check, Plus, Minus, ArrowRight, Loader2 } from "lucide-react";
+import { ShoppingCart, Check, Plus, Minus, ArrowRight, Loader2, PhoneCall } from "lucide-react";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -30,72 +30,86 @@ export default function AddToCartButton({
         router.push("/checkout");
       } else {
         setJustAdded(true);
-        setTimeout(() => setJustAdded(false), 2500);
+        setTimeout(() => setJustAdded(false), 3000);
       }
     });
   };
 
   if (!isInStock) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-center text-xs font-semibold text-gray-500">
-        This item is currently out of stock. Please check back later or call the store to request restock.
+      <div className="rounded-xl border-2 border-slate-300 bg-slate-100 p-5 text-center space-y-2">
+        <p className="text-base font-bold text-slate-800">
+          This product is currently out of stock
+        </p>
+        <p className="text-sm text-slate-600">
+          You can call our shop directly to check when new shipment arrives or reserve units:
+        </p>
+        <a
+          href="tel:+919876543210"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-4 py-2 text-sm font-bold text-white hover:bg-blue-800"
+        >
+          <PhoneCall className="h-4 w-4" />
+          <span>Call Shop: +91 98765 43210</span>
+        </a>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
-      {/* Quantity Stepper */}
-      <div className="flex items-center gap-3">
-        <span className="text-xs font-semibold text-gray-700">Quantity:</span>
-        <div className="flex items-center rounded-lg border border-gray-300 bg-white p-1">
+    <div className="space-y-4">
+      {/* Senior-Friendly 44px Quantity Stepper */}
+      <div className="flex items-center gap-4">
+        <span className="text-base font-bold text-slate-800">Select Quantity:</span>
+        <div className="flex items-center rounded-lg border-2 border-slate-300 bg-white p-1">
           <button
             type="button"
             disabled={quantity <= 1 || isPending}
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Decrease quantity"
           >
-            <Minus className="h-3 w-3" />
+            <Minus className="h-5 w-5 stroke-[2.5]" />
           </button>
-          <span className="w-8 text-center text-xs font-bold text-gray-900">
+          <span className="w-12 text-center text-lg font-bold text-slate-900">
             {quantity}
           </span>
           <button
             type="button"
             disabled={quantity >= stockQuantity || isPending}
             onClick={() => setQuantity((q) => Math.min(stockQuantity, q + 1))}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-40"
+            className="flex h-10 w-10 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Increase quantity"
           >
-            <Plus className="h-3 w-3" />
+            <Plus className="h-5 w-5 stroke-[2.5]" />
           </button>
         </div>
-        <span className="text-[11px] text-gray-500">
-          ({stockQuantity} available)
+        <span className="text-sm font-semibold text-slate-600">
+          ({stockQuantity} available in store)
         </span>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex flex-col gap-2.5 sm:flex-row">
+      {/* Action Buttons - Senior-Friendly 48px Height */}
+      <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="button"
           disabled={isPending}
           onClick={() => onAdd(false)}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-xs font-bold transition-all shadow-xs ${
+          className={`flex h-12 flex-1 items-center justify-center gap-2 rounded-lg px-6 text-base font-bold transition-all shadow-xs ${
             justAdded
-              ? "bg-emerald-600 text-white"
-              : "border border-blue-600 bg-white text-blue-600 hover:bg-blue-50"
+              ? "bg-emerald-700 text-white"
+              : "border-2 border-blue-700 bg-white text-blue-700 hover:bg-blue-50 active:bg-blue-100"
           } disabled:opacity-50`}
         >
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-5 w-5 animate-spin" />
           ) : justAdded ? (
             <>
-              <Check className="h-4 w-4" />
+              <Check className="h-5 w-5 stroke-[3]" />
               <span>Added to Cart!</span>
             </>
           ) : (
             <>
-              <ShoppingCart className="h-4 w-4" />
+              <ShoppingCart className="h-5 w-5" />
               <span>Add to Cart</span>
             </>
           )}
@@ -105,12 +119,18 @@ export default function AddToCartButton({
           type="button"
           disabled={isPending}
           onClick={() => onAdd(true)}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-xs font-bold text-white shadow-sm hover:bg-blue-700 disabled:opacity-50"
+          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:opacity-50 transition-colors"
         >
-          <span>Buy Now</span>
-          <ArrowRight className="h-4 w-4" />
+          <span>Order Now &amp; Checkout</span>
+          <ArrowRight className="h-5 w-5" />
         </button>
       </div>
+
+      {justAdded && (
+        <div className="rounded-lg border-2 border-emerald-300 bg-emerald-50 p-3 text-center text-sm font-bold text-emerald-900">
+          ✓ Item added to your shopping cart. You can continue shopping or view your cart anytime.
+        </div>
+      )}
     </div>
   );
 }

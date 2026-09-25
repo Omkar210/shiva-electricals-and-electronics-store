@@ -7,45 +7,44 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
-  // Select icon based on slug
   const getIcon = (slug: string) => {
     switch (slug) {
       case "ro-purifiers":
-        return <Droplet className="h-6 w-6 text-blue-600" />;
+        return <Droplet className="h-7 w-7 text-blue-700" />;
       case "ro-spare-parts":
-        return <Wrench className="h-6 w-6 text-emerald-600" />;
+        return <Wrench className="h-7 w-7 text-emerald-700" />;
       case "fans":
-        return <Fan className="h-6 w-6 text-indigo-600" />;
+        return <Fan className="h-7 w-7 text-indigo-700" />;
       case "electrical-electronics":
-        return <Zap className="h-6 w-6 text-amber-600" />;
+        return <Zap className="h-7 w-7 text-amber-700" />;
       case "services":
-        return <ShieldCheck className="h-6 w-6 text-purple-600" />;
+        return <ShieldCheck className="h-7 w-7 text-purple-700" />;
       default:
-        return <Droplet className="h-6 w-6 text-blue-600" />;
+        return <Droplet className="h-7 w-7 text-blue-700" />;
     }
   };
 
   return (
     <Link
       href={`/products?category=${category.slug}`}
-      className="group relative flex flex-col items-center rounded-2xl border border-gray-200/80 bg-white p-6 text-center shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-md"
+      className="group relative flex flex-col items-center rounded-xl border-2 border-slate-200 bg-white p-6 text-center shadow-xs transition-all duration-200 hover:border-blue-600 hover:shadow-md"
     >
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 transition-colors group-hover:bg-blue-50">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 transition-colors group-hover:bg-blue-50">
         {getIcon(category.slug)}
       </div>
 
-      <h3 className="mt-4 text-sm font-bold text-gray-900 group-hover:text-blue-600">
+      <h3 className="mt-4 text-base sm:text-lg font-bold text-slate-900 group-hover:text-blue-700">
         {category.name}
       </h3>
 
       {category.description && (
-        <p className="mt-1 line-clamp-2 text-xs text-gray-500">
+        <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">
           {category.description}
         </p>
       )}
 
-      <span className="mt-3 text-xs font-semibold text-blue-600 group-hover:underline">
-        Explore Items &rarr;
+      <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-blue-700 group-hover:underline">
+        Browse Category &rarr;
       </span>
     </Link>
   );

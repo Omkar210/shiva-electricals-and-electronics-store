@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shivaelectrical.in";
 
@@ -102,11 +108,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <JsonLd data={localBusinessSchema} />
       </head>
-      <body className="flex min-h-screen flex-col bg-white text-gray-900 antialiased">
+      <body className={`${inter.className} flex min-h-screen flex-col bg-slate-50 text-slate-900 antialiased selection:bg-blue-700 selection:text-white`}>
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

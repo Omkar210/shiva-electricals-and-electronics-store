@@ -3,9 +3,8 @@
 import { useState, useTransition } from "react";
 import { adjustStockAction } from "@/app/admin/inventory/actions";
 import type { InventoryTransactionType } from "@/types/database";
+import { Dialog } from "@/components/ui/dialog";
 import {
-  Boxes,
-  X,
   Loader2,
   AlertTriangle,
   PlusCircle,
@@ -37,8 +36,6 @@ export function AdjustStockModal({
   const [referenceId, setReferenceId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-
-  if (!isOpen) return null;
 
   // Calculate net quantity change
   let calculatedChange = units;
@@ -90,33 +87,15 @@ export function AdjustStockModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
-      <div className="w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-xl space-y-5">
-        {/* Header */}
-        <div className="flex items-start justify-between border-b border-gray-100 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-blue-50 p-2.5 text-blue-600">
-              <Boxes className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900">Adjust Inventory</h3>
-              <p className="text-xs text-gray-500">
-                <span className="font-semibold text-gray-700">{product.name}</span> (SKU: {product.sku})
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 cursor-pointer"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Adjust Inventory Stock"
+      description={`${product.name} (SKU: ${product.sku})`}
+    >
+      <div className="space-y-5">
         {error && (
-          <div className="rounded-xl bg-red-50 p-3 text-xs text-red-700 border border-red-200">
+          <div className="rounded-xl bg-red-50 p-4 text-sm font-semibold text-red-900 border-2 border-red-200">
             {error}
           </div>
         )}
@@ -124,7 +103,7 @@ export function AdjustStockModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Transaction Type */}
           <div className="space-y-1">
-            <label htmlFor="tx-type" className="block text-xs font-semibold text-gray-700">
+            <label htmlFor="tx-type" className="block text-sm font-bold text-slate-800">
               Adjustment Type
             </label>
             <select
@@ -136,7 +115,7 @@ export function AdjustStockModal({
                 if (val === "DAMAGE") setIsReduction(true);
                 if (val === "PURCHASE" || val === "RETURN") setIsReduction(false);
               }}
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+              className="w-full rounded-lg border-2 border-slate-300 p-3 text-base text-slate-900 focus:border-blue-700 focus:outline-none"
             >
               <option value="PURCHASE">PURCHASE — New Stock Receipt / Supplier Inward (+)</option>
               <option value="RETURN">RETURN — Customer / Service RMA Return (+)</option>
@@ -147,35 +126,35 @@ export function AdjustStockModal({
 
           {/* If Adjustment: Add or Subtract toggle */}
           {transactionType === "ADJUSTMENT" && (
-            <div className="flex items-center gap-4 text-xs font-medium">
-              <span className="text-gray-600">Adjustment Direction:</span>
+            <div className="flex items-center gap-3 text-sm font-bold">
+              <span className="text-slate-700">Direction:</span>
               <button
                 type="button"
                 onClick={() => setIsReduction(false)}
-                className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 cursor-pointer ${
-                  !isReduction ? "bg-emerald-100 text-emerald-800 font-bold" : "bg-gray-100 text-gray-600"
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 cursor-pointer border ${
+                  !isReduction ? "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold" : "bg-slate-100 text-slate-700 border-slate-200"
                 }`}
               >
-                <PlusCircle className="h-3.5 w-3.5" />
-                Add Stock (+)
+                <PlusCircle className="h-4 w-4" />
+                <span>Add Units (+)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setIsReduction(true)}
-                className={`inline-flex items-center gap-1 rounded-lg px-3 py-1.5 cursor-pointer ${
-                  isReduction ? "bg-red-100 text-red-800 font-bold" : "bg-gray-100 text-gray-600"
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 cursor-pointer border ${
+                  isReduction ? "bg-red-100 text-red-900 border-red-300 font-bold" : "bg-slate-100 text-slate-700 border-slate-200"
                 }`}
               >
-                <MinusCircle className="h-3.5 w-3.5" />
-                Deduct Stock (-)
+                <MinusCircle className="h-4 w-4" />
+                <span>Deduct Units (-)</span>
               </button>
             </div>
           )}
 
           {/* Quantity Input */}
           <div className="space-y-1">
-            <label htmlFor="units" className="block text-xs font-semibold text-gray-700">
-              Units Quantity
+            <label htmlFor="units" className="block text-sm font-bold text-slate-800">
+              Units Quantity *
             </label>
             <input
               type="number"
@@ -183,31 +162,31 @@ export function AdjustStockModal({
               min="1"
               value={units}
               onChange={(e) => setUnits(Math.max(1, parseInt(e.target.value) || 0))}
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+              className="w-full rounded-lg border-2 border-slate-300 p-3 text-base font-bold text-slate-900 focus:border-blue-700 focus:outline-none"
             />
           </div>
 
           {/* Stock Projection Preview */}
-          <div className="rounded-xl border border-blue-100 bg-blue-50/50 p-4 text-xs space-y-1">
-            <div className="flex justify-between text-gray-600">
-              <span>Current In-Store Stock:</span>
-              <strong className="text-gray-900">{product.stock_quantity} units</strong>
+          <div className="rounded-xl border-2 border-blue-200 bg-blue-50/60 p-4 text-sm space-y-1.5">
+            <div className="flex justify-between text-slate-700">
+              <span>Current Stock on Hand:</span>
+              <strong className="text-slate-900">{product.stock_quantity} units</strong>
             </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Adjustment delta:</span>
-              <strong className={calculatedChange >= 0 ? "text-emerald-600" : "text-red-600"}>
+            <div className="flex justify-between text-slate-700">
+              <span>Calculated Change:</span>
+              <strong className={calculatedChange >= 0 ? "text-emerald-800" : "text-red-700"}>
                 {calculatedChange > 0 ? `+${calculatedChange}` : calculatedChange} units
               </strong>
             </div>
-            <div className="border-t border-blue-200/60 pt-2 flex justify-between font-bold text-gray-900">
-              <span>Projected Resulting Stock:</span>
-              <span className={`text-sm ${isInvalidStock ? "text-red-600" : "text-blue-700"}`}>
+            <div className="border-t border-blue-200 pt-2 flex justify-between font-bold text-slate-900">
+              <span>New Resulting Stock:</span>
+              <span className={`text-base ${isInvalidStock ? "text-red-700" : "text-blue-800 font-extrabold"}`}>
                 {projectedStock} units
               </span>
             </div>
             {isInvalidStock && (
-              <p className="text-[11px] text-red-600 pt-1 font-semibold flex items-center gap-1">
-                <AlertTriangle className="h-3 w-3" />
+              <p className="text-xs text-red-700 pt-1 font-bold flex items-center gap-1">
+                <AlertTriangle className="h-4 w-4" />
                 Negative stock is not permitted by database rules.
               </p>
             )}
@@ -215,8 +194,8 @@ export function AdjustStockModal({
 
           {/* Mandatory Reason */}
           <div className="space-y-1">
-            <label htmlFor="reason" className="block text-xs font-semibold text-gray-700">
-              Mandatory Adjustment Reason *
+            <label htmlFor="reason" className="block text-sm font-bold text-slate-800">
+              Reason for Adjustment *
             </label>
             <textarea
               id="reason"
@@ -225,32 +204,32 @@ export function AdjustStockModal({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. Received shipment from Eureka Forbes; Physical count discrepancy in aisle 3"
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+              className="w-full rounded-lg border-2 border-slate-300 p-3 text-base text-slate-900 focus:border-blue-700 focus:outline-none"
             />
           </div>
 
           {/* Optional Reference ID */}
           <div className="space-y-1">
-            <label htmlFor="ref-id" className="block text-xs font-semibold text-gray-700">
-              Reference / Document ID (Optional)
+            <label htmlFor="ref-id" className="block text-sm font-bold text-slate-800">
+              Reference / Invoice ID (Optional)
             </label>
             <input
               type="text"
               id="ref-id"
               value={referenceId}
               onChange={(e) => setReferenceId(e.target.value)}
-              placeholder="e.g. PO-84920, INV-2026-091, RMA-431"
-              className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 focus:outline-none"
+              placeholder="e.g. PO-84920, INV-2026-091"
+              className="w-full rounded-lg border-2 border-slate-300 p-3 text-base text-slate-900 focus:border-blue-700 focus:outline-none"
             />
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending}
-              className="rounded-xl border border-gray-200 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-50 cursor-pointer"
+              className="h-11 rounded-lg border-2 border-slate-300 px-5 text-sm font-bold text-slate-700 hover:bg-slate-100 cursor-pointer transition-colors"
             >
               Cancel
             </button>
@@ -258,20 +237,20 @@ export function AdjustStockModal({
             <button
               type="submit"
               disabled={isPending || isInvalidStock}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2 text-xs font-bold text-white shadow-xs hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+              className="inline-flex h-11 items-center gap-2 rounded-lg bg-blue-700 px-6 text-sm font-bold text-white shadow-xs hover:bg-blue-800 disabled:opacity-50 cursor-pointer transition-colors"
             >
               {isPending ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Recording Adjustment...
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Saving...</span>
                 </>
               ) : (
-                "Save & Log Transaction"
+                <span>Save Stock Adjustment</span>
               )}
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </Dialog>
   );
 }

@@ -18,6 +18,8 @@ import {
   AlertTriangle,
   Truck,
   ShieldCheck,
+  Package,
+  PhoneCall,
 } from "lucide-react";
 
 interface CartViewProps {
@@ -47,28 +49,29 @@ export default function CartView({ initialCart }: CartViewProps) {
 
   if (initialCart.items.length === 0) {
     return (
-      <div className="mx-auto max-w-2xl rounded-3xl border border-dashed border-gray-300 bg-gray-50/50 p-12 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-          <ShoppingBag className="h-8 w-8" />
+      <div className="mx-auto max-w-2xl rounded-2xl border-2 border-dashed border-slate-300 bg-white p-8 sm:p-12 text-center space-y-4 shadow-2xs">
+        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+          <ShoppingBag className="h-10 w-10" />
         </div>
-        <h2 className="mt-4 text-xl font-bold text-gray-900">Your Cart is Empty</h2>
-        <p className="mt-2 text-xs text-gray-500 sm:text-sm">
-          Browse our certified RO purifiers, genuine spare filters, fans, and electrical accessories to add items to your cart.
+        <h2 className="text-2xl font-extrabold text-slate-900">Your Shopping Cart is Empty</h2>
+        <p className="text-base text-slate-600 max-w-md mx-auto leading-relaxed">
+          You have not added any purifiers, spare filter sets, or electrical appliances to your cart yet.
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <div className="pt-4 flex flex-wrap justify-center gap-3">
           <Link
             href="/products"
-            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-xs font-bold text-white shadow-sm hover:bg-blue-700"
+            className="flex h-12 items-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 transition-colors"
           >
-            Explore Catalog
-            <ArrowRight className="h-4 w-4" />
+            <span>Browse Catalog</span>
+            <ArrowRight className="h-5 w-5" />
           </Link>
-          <Link
-            href="/products?category=ro-spare-parts"
-            className="inline-flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 text-xs font-semibold text-gray-700 shadow-xs hover:bg-gray-50"
+          <a
+            href="tel:+919876543210"
+            className="flex h-12 items-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-5 text-base font-bold text-slate-800 hover:bg-slate-50 transition-colors"
           >
-            Browse RO Spares
-          </Link>
+            <PhoneCall className="h-5 w-5 text-blue-700" />
+            <span>Call Shop for Help</span>
+          </a>
         </div>
       </div>
     );
@@ -77,40 +80,40 @@ export default function CartView({ initialCart }: CartViewProps) {
   return (
     <div className="grid gap-8 lg:grid-cols-12">
       {/* Items Column */}
-      <div className="space-y-4 lg:col-span-8">
-        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
+      <div className="space-y-5 lg:col-span-8">
+        <div className="flex items-center justify-between border-b-2 border-slate-200 pb-4">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
             Shopping Cart ({initialCart.itemCount} {initialCart.itemCount === 1 ? "item" : "items"})
           </h1>
           <button
             type="button"
             onClick={onClear}
             disabled={isPending}
-            className="text-xs font-medium text-gray-500 hover:text-red-600 disabled:opacity-50"
+            className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-bold text-slate-600 hover:text-red-700 hover:border-red-300 disabled:opacity-50 transition-colors cursor-pointer"
           >
-            Clear Cart
+            Empty Cart
           </button>
         </div>
 
         {initialCart.hasOutOfStock && (
-          <div className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800">
-            <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600" />
-            <p>
-              Some items in your cart exceed current available inventory. Please adjust quantities before proceeding to checkout.
+          <div className="flex items-start gap-3 rounded-xl border-2 border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+            <AlertTriangle className="h-5 w-5 shrink-0 text-amber-700 mt-0.5" />
+            <p className="font-semibold">
+              Some items in your cart exceed our current shop stock. Please adjust quantities before proceeding to checkout.
             </p>
           </div>
         )}
 
-        <div className="divide-y divide-gray-100 rounded-2xl border border-gray-200 bg-white shadow-xs">
+        <div className="divide-y-2 divide-slate-100 rounded-xl border-2 border-slate-200 bg-white shadow-xs">
           {initialCart.items.map((item) => {
             const product = item.product!;
             const isExceeded = item.quantity > item.maxAvailable;
 
             return (
-              <div key={item.productId} className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+              <div key={item.productId} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
                   {/* Thumbnail */}
-                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-slate-200 bg-slate-50">
                     {product.primary_image ? (
                       <Image
                         src={product.primary_image}
@@ -119,47 +122,48 @@ export default function CartView({ initialCart }: CartViewProps) {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-[10px] text-gray-400">
-                        No Image
+                      <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">
+                        <Package className="h-6 w-6 text-slate-300" />
                       </div>
                     )}
                   </div>
 
                   {/* Details */}
                   <div className="space-y-1">
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600">
+                    <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
                       {product.categories?.name}
                     </span>
-                    <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 hover:text-blue-700">
                       <Link href={`/products/${product.slug}`}>{product.name}</Link>
                     </h3>
-                    <p className="text-xs text-gray-500 font-mono">SKU: {product.sku}</p>
-                    <p className="text-xs font-bold text-gray-900 sm:hidden">
+                    <p className="text-sm text-slate-500 font-mono">SKU: {product.sku}</p>
+                    <p className="text-base font-bold text-slate-900 sm:hidden">
                       ₹{product.price.toLocaleString("en-IN")} each
                     </p>
 
                     {isExceeded && (
-                      <p className="text-[11px] font-semibold text-rose-600">
-                        Only {item.maxAvailable} available in stock
+                      <p className="text-sm font-bold text-red-700">
+                        ⚠️ Only {item.maxAvailable} available in store
                       </p>
                     )}
                   </div>
                 </div>
 
                 {/* Price, Stepper & Controls */}
-                <div className="flex items-center justify-between gap-6 border-t border-gray-100 pt-3 sm:border-0 sm:pt-0">
-                  {/* Quantity Stepper */}
-                  <div className="flex items-center rounded-lg border border-gray-300 bg-gray-50/50 p-1">
+                <div className="flex items-center justify-between gap-6 border-t border-slate-100 pt-3 sm:border-0 sm:pt-0">
+                  {/* Senior-Friendly Stepper */}
+                  <div className="flex items-center rounded-lg border-2 border-slate-300 bg-white p-1">
                     <button
                       type="button"
                       disabled={isPending || item.quantity <= 1}
                       onClick={() => onUpdateQty(item.productId, item.quantity - 1)}
-                      className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-gray-600 shadow-xs hover:bg-gray-100 disabled:opacity-40"
+                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 transition-colors"
+                      aria-label="Decrease quantity"
                     >
-                      <Minus className="h-3 w-3" />
+                      <Minus className="h-4 w-4 stroke-[2.5]" />
                     </button>
 
-                    <span className="w-9 text-center text-xs font-bold text-gray-900">
+                    <span className="w-10 text-center text-base font-bold text-slate-900">
                       {item.quantity}
                     </span>
 
@@ -167,31 +171,33 @@ export default function CartView({ initialCart }: CartViewProps) {
                       type="button"
                       disabled={isPending || item.quantity >= item.maxAvailable}
                       onClick={() => onUpdateQty(item.productId, item.quantity + 1)}
-                      className="flex h-7 w-7 items-center justify-center rounded-md bg-white text-gray-600 shadow-xs hover:bg-gray-100 disabled:opacity-40"
+                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 transition-colors"
+                      aria-label="Increase quantity"
                     >
-                      <Plus className="h-3 w-3" />
+                      <Plus className="h-4 w-4 stroke-[2.5]" />
                     </button>
                   </div>
 
                   {/* Line Total */}
                   <div className="text-right">
-                    <div className="text-sm font-bold text-gray-900">
+                    <div className="text-lg font-extrabold text-slate-900">
                       ₹{item.lineTotal.toLocaleString("en-IN")}
                     </div>
-                    <div className="hidden text-[11px] text-gray-400 sm:block">
+                    <div className="hidden text-xs font-semibold text-slate-500 sm:block">
                       ₹{product.price.toLocaleString("en-IN")} × {item.quantity}
                     </div>
                   </div>
 
-                  {/* Remove Button */}
+                  {/* Accessible Remove Button with Visible Text */}
                   <button
                     type="button"
                     disabled={isPending}
                     onClick={() => onRemove(item.productId)}
-                    className="p-1.5 text-gray-400 hover:text-red-600 disabled:opacity-50"
-                    title="Remove item"
+                    className="flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 transition-colors cursor-pointer"
+                    title="Remove product from cart"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4 text-red-600" />
+                    <span>Delete</span>
                   </button>
                 </div>
               </div>
@@ -202,55 +208,57 @@ export default function CartView({ initialCart }: CartViewProps) {
 
       {/* Order Summary Sidebar */}
       <div className="space-y-4 lg:col-span-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs space-y-5">
-          <h2 className="text-base font-bold text-gray-900">Order Summary</h2>
+        <div className="rounded-xl border-2 border-slate-200 bg-white p-6 shadow-xs space-y-6">
+          <h2 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+            Order Summary
+          </h2>
 
-          <div className="space-y-3 text-xs">
-            <div className="flex justify-between text-gray-600">
-              <span>Items Subtotal</span>
-              <span className="font-semibold text-gray-900">
+          <div className="space-y-3.5 text-base">
+            <div className="flex justify-between text-slate-700">
+              <span>Items Total</span>
+              <span className="font-bold text-slate-900">
                 ₹{initialCart.subtotal.toLocaleString("en-IN")}
               </span>
             </div>
 
-            <div className="flex justify-between text-gray-600">
-              <span>Local Delivery Charge</span>
-              <span className="font-medium text-emerald-700">Calculated at checkout</span>
+            <div className="flex justify-between text-slate-700">
+              <span>Local Delivery Fee</span>
+              <span className="font-semibold text-emerald-800">Verified at checkout</span>
             </div>
 
-            <div className="border-t border-gray-100 pt-3 flex justify-between text-sm font-bold text-gray-900">
-              <span>Estimated Subtotal</span>
-              <span className="text-base text-blue-600">
+            <div className="border-t-2 border-slate-200 pt-3 flex justify-between text-lg font-extrabold text-slate-900">
+              <span>Subtotal</span>
+              <span className="text-2xl font-black text-blue-700">
                 ₹{initialCart.subtotal.toLocaleString("en-IN")}
               </span>
             </div>
           </div>
 
-          <div className="space-y-2 rounded-xl bg-blue-50/60 p-3.5 text-xs text-gray-600">
-            <div className="flex items-center gap-2 font-semibold text-blue-800">
-              <Truck className="h-4 w-4 text-blue-600" />
-              <span>Doorstep Delivery Available</span>
+          <div className="space-y-2 rounded-xl bg-blue-50/80 border border-blue-200 p-4 text-sm text-slate-700">
+            <div className="flex items-center gap-2 font-bold text-blue-900">
+              <Truck className="h-5 w-5 text-blue-700" />
+              <span>Doorstep Delivery &amp; Demo</span>
             </div>
-            <p className="text-[11px] leading-relaxed">
-              Serving local town and nearby regions with same-day and scheduled delivery options.
+            <p className="leading-relaxed">
+              We deliver locally and our technician can install and test your purifier on arrival.
             </p>
           </div>
 
           <Link
             href={initialCart.hasOutOfStock ? "#" : "/checkout"}
-            className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-sm transition-colors ${
+            className={`flex h-13 w-full items-center justify-center gap-2 rounded-lg text-base font-bold text-white shadow-xs transition-colors ${
               initialCart.hasOutOfStock
-                ? "cursor-not-allowed bg-gray-400"
-                : "bg-blue-600 hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600"
+                ? "cursor-not-allowed bg-slate-400"
+                : "bg-blue-700 hover:bg-blue-800 active:bg-blue-900"
             }`}
           >
-            Proceed to Checkout
-            <ArrowRight className="h-4 w-4" />
+            <span>Proceed to Checkout</span>
+            <ArrowRight className="h-5 w-5" />
           </Link>
 
-          <div className="flex items-center justify-center gap-2 text-[11px] text-gray-500">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-            <span>Pay on Delivery (COD) supported</span>
+          <div className="flex items-center justify-center gap-2 text-sm font-semibold text-slate-600">
+            <ShieldCheck className="h-4 w-4 text-emerald-700" />
+            <span>Pay on Delivery (Cash or UPI) supported</span>
           </div>
         </div>
       </div>

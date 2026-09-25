@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getCurrentUser } from "@/lib/auth/roles";
 import { getCart, clearCart } from "@/lib/cart/service";
 import { validateDeliveryZone } from "@/lib/checkout/delivery";
@@ -213,7 +214,12 @@ export async function placeOrder(input: CheckoutInput): Promise<PlaceOrderResult
  * Retrieves order details by order number for confirmation or tracking.
  */
 export async function getOrderByNumber(orderNumber: string) {
-  const supabase = await createClient();
+  let supabase;
+  try {
+    supabase = createAdminClient();
+  } catch {
+    supabase = await createClient();
+  }
 
   const { data: order, error } = await supabase
     .from("orders")

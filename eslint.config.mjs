@@ -8,6 +8,15 @@ const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
   {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      ".agents/**",
+      "qa/**",
+      ".playwright-mcp/**",
+    ],
+  },
+  {
     rules: {
       "@typescript-eslint/no-unused-vars": [
         "warn",

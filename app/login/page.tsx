@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { login, type AuthActionResult } from "@/app/auth/actions";
-import { LogIn, AlertCircle } from "lucide-react";
+import { LogIn, AlertCircle, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
@@ -17,43 +17,43 @@ export default function LoginPage() {
   );
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 rounded-2xl border border-gray-100 bg-white p-8 shadow-lg shadow-gray-100/50">
-        <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-            <LogIn className="h-6 w-6" />
+    <div className="flex min-h-[calc(100vh-10rem)] items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-6 rounded-xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+        <div className="text-center space-y-2">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-800">
+            <LogIn className="h-7 w-7" />
           </div>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900">
-            Welcome Back
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Log in to manage your orders, delivery address, and account
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+            Log In to Your Account
+          </h1>
+          <p className="text-base text-slate-600">
+            Enter your details to track orders and manage delivery addresses
           </p>
         </div>
 
         {errorParam === "auth_callback_failed" && (
-          <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            <span>The authentication link was invalid or has expired. Please log in directly.</span>
+          <div className="flex items-start gap-2.5 rounded-lg border-2 border-red-300 bg-red-50 p-4 text-sm font-semibold text-red-900">
+            <AlertCircle className="h-5 w-5 shrink-0 text-red-700 mt-0.5" />
+            <span>The login link expired or is invalid. Please log in with your email and password below.</span>
           </div>
         )}
 
         {state?.error && (
-          <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-            <AlertCircle className="h-4 w-4 shrink-0" />
+          <div className="flex items-start gap-2.5 rounded-lg border-2 border-red-300 bg-red-50 p-4 text-sm font-semibold text-red-900">
+            <AlertCircle className="h-5 w-5 shrink-0 text-red-700 mt-0.5" />
             <span>{state.error}</span>
           </div>
         )}
 
-        <form action={formAction} className="mt-8 space-y-5">
+        <form action={formAction} className="space-y-4">
           <input type="hidden" name="redirect" value={redirectUrl} />
 
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-bold text-slate-800 mb-1"
             >
-              Email Address
+              Email Address *
             </label>
             <input
               id="email"
@@ -61,48 +61,61 @@ export default function LoginPage() {
               type="email"
               autoComplete="email"
               required
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 sm:text-sm"
-              placeholder="you@example.com"
+              className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
+              placeholder="e.g. yourname@gmail.com"
             />
           </div>
 
           <div>
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-            </div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-bold text-slate-800 mb-1"
+            >
+              Password *
+            </label>
             <input
               id="password"
               name="password"
               type="password"
               autoComplete="current-password"
               required
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 sm:text-sm"
-              placeholder="••••••••"
+              className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
+              placeholder="Enter your password"
             />
           </div>
 
           <button
             type="submit"
             disabled={isPending}
-            className="flex w-full justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:opacity-50 transition-colors cursor-pointer"
           >
-            {isPending ? "Logging in..." : "Log In"}
+            {isPending ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Logging In...</span>
+              </>
+            ) : (
+              <span>Log In to Account</span>
+            )}
           </button>
         </form>
 
-        <div className="text-center text-sm text-gray-600">
-          Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
-          >
-            Create an account
-          </Link>
+        <div className="border-t border-slate-200 pt-4 text-center text-sm font-medium text-slate-700 space-y-2">
+          <p>
+            Do not have an account?{" "}
+            <Link
+              href="/signup"
+              className="font-bold text-blue-700 hover:underline"
+            >
+              Create a free account
+            </Link>
+          </p>
+          <p className="text-xs text-slate-500">
+            Need help logging in? Call shop support at{" "}
+            <a href="tel:+919876543210" className="font-bold text-slate-800 underline">
+              +91 98765 43210
+            </a>
+          </p>
         </div>
       </div>
     </div>

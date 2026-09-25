@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   Loader2,
   DollarSign,
+  Package,
 } from "lucide-react";
 
 interface CheckoutFormProps {
@@ -61,7 +62,7 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
           deliveryCharge: 0,
           estimatedDelivery: "",
           minimumOrder: 0,
-          error: `Pincode ${clean} is not within our direct delivery zones. Please call the shop for nearby arrangements.`,
+          error: `Pincode ${clean} is outside our direct local delivery zone. Please call the shop (+91 98765 43210) for nearby delivery arrangements.`,
         });
       } else if (data.minimum_order > 0 && cart.subtotal < data.minimum_order) {
         setPincodeStatus("invalid");
@@ -71,7 +72,7 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
           deliveryCharge: data.delivery_charge,
           estimatedDelivery: data.estimated_delivery,
           minimumOrder: data.minimum_order,
-          error: `Minimum order for delivery to ${data.town} is ₹${data.minimum_order}. Your cart subtotal is ₹${cart.subtotal}.`,
+          error: `Minimum order for doorstep delivery to ${data.town} is ₹${data.minimum_order}. Your cart subtotal is ₹${cart.subtotal}.`,
         });
       } else {
         setPincodeStatus("valid");
@@ -96,35 +97,39 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
     <form action={formAction} className="grid gap-8 lg:grid-cols-12">
       {/* Checkout Inputs Column */}
       <div className="space-y-6 lg:col-span-7">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Link
             href="/cart"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-slate-300 bg-white text-slate-700 hover:bg-slate-100 transition-colors"
+            aria-label="Back to Cart"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-5 w-5" />
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Secure Checkout
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            Delivery &amp; Checkout
           </h1>
         </div>
 
         {state?.error && (
-          <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800">
-            <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
-            <p className="font-semibold">{state.error}</p>
+          <div className="flex items-start gap-3 rounded-xl border-2 border-red-300 bg-red-50 p-4 text-sm text-red-950">
+            <AlertCircle className="h-6 w-6 shrink-0 text-red-700 mt-0.5" />
+            <div>
+              <p className="font-bold text-red-900">Please review your information:</p>
+              <p className="mt-0.5 text-red-800">{state.error}</p>
+            </div>
           </div>
         )}
 
         {/* 1. Customer Contact */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
-            1. Contact Details
+        <div className="rounded-xl border-2 border-slate-200 bg-white p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-slate-900 border-b border-slate-200 pb-2">
+            1. Customer Contact Details
           </h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="block text-xs font-semibold text-gray-700">
-                Full Name *
+              <label htmlFor="name" className="block text-sm font-bold text-slate-800 mb-1">
+                Your Full Name *
               </label>
               <input
                 id="name"
@@ -132,14 +137,14 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
                 type="text"
                 required
                 defaultValue={profile?.full_name || ""}
-                placeholder="Ramesh Sharma"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                placeholder="e.g. Ramesh Sharma"
+                className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
               />
             </div>
 
             <div>
-              <label htmlFor="phone" className="block text-xs font-semibold text-gray-700">
-                Phone Number (for Delivery Driver) *
+              <label htmlFor="phone" className="block text-sm font-bold text-slate-800 mb-1">
+                Mobile Number (for Delivery Driver) *
               </label>
               <input
                 id="phone"
@@ -148,14 +153,14 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
                 required
                 defaultValue={profile?.phone || ""}
                 placeholder="10-digit mobile number"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-xs font-semibold text-gray-700">
-              Email Address (for Order Updates)
+            <label htmlFor="email" className="block text-sm font-bold text-slate-800 mb-1">
+              Email Address (Optional, for digital receipt)
             </label>
             <input
               id="email"
@@ -163,84 +168,85 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
               type="email"
               defaultValue={profile?.email || ""}
               placeholder="you@example.com"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
             />
           </div>
         </div>
 
         {/* 2. Delivery Address */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
-            2. Delivery Address
+        <div className="rounded-xl border-2 border-slate-200 bg-white p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-slate-900 border-b border-slate-200 pb-2">
+            2. Doorstep Delivery Address
           </h2>
 
           <div>
-            <label htmlFor="addressLine1" className="block text-xs font-semibold text-gray-700">
-              House / Building / Street Address *
+            <label htmlFor="addressLine1" className="block text-sm font-bold text-slate-800 mb-1">
+              House / Flat No., Building &amp; Street Address *
             </label>
             <input
               id="addressLine1"
               name="addressLine1"
               type="text"
               required
-              placeholder="Flat 202, Gokul Residency, Main Market Road"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              placeholder="e.g. Flat 202, Gokul Residency, Main Market Road"
+              className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
             />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="addressLine2" className="block text-xs font-semibold text-gray-700">
-                Area / Colony / Sector
+              <label htmlFor="addressLine2" className="block text-sm font-bold text-slate-800 mb-1">
+                Colony, Sector or Mohalla
               </label>
               <input
                 id="addressLine2"
                 name="addressLine2"
                 type="text"
-                placeholder="Sector 4"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                placeholder="e.g. Sector 4, Near Gandhi Chowk"
+                className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
               />
             </div>
 
             <div>
-              <label htmlFor="landmark" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="landmark" className="block text-sm font-bold text-slate-800 mb-1">
                 Nearby Landmark
               </label>
               <input
                 id="landmark"
                 name="landmark"
                 type="text"
-                placeholder="Opposite Water Tank"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                placeholder="e.g. Opposite Water Tank or High School"
+                className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <label htmlFor="pincode" className="block text-xs font-semibold text-gray-700">
-                Pincode *
+              <label htmlFor="pincode" className="block text-sm font-bold text-slate-800 mb-1">
+                6-digit Pincode *
               </label>
-              <div className="relative mt-1">
+              <div className="relative">
                 <input
                   id="pincode"
                   name="pincode"
                   type="text"
                   required
+                  inputMode="numeric"
                   maxLength={6}
                   value={pincode}
                   onChange={(e) => handlePincodeChange(e.target.value)}
-                  placeholder="6-digit PIN"
-                  className="block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                  placeholder="e.g. 413001"
+                  className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base font-bold tracking-wider text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
                 />
                 {pincodeStatus === "loading" && (
-                  <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                  <Loader2 className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-blue-700" />
                 )}
               </div>
             </div>
 
             <div>
-              <label htmlFor="city" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="city" className="block text-sm font-bold text-slate-800 mb-1">
                 Town / City *
               </label>
               <input
@@ -253,12 +259,12 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
                   setZoneDetails((prev) => (prev ? { ...prev, town: e.target.value } : null))
                 }
                 placeholder="City/Town"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
               />
             </div>
 
             <div>
-              <label htmlFor="state" className="block text-xs font-semibold text-gray-700">
+              <label htmlFor="state" className="block text-sm font-bold text-slate-800 mb-1">
                 State
               </label>
               <input
@@ -266,62 +272,64 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
                 name="state"
                 type="text"
                 defaultValue="Maharashtra"
-                className="mt-1 block w-full rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 shadow-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                className="h-12 w-full rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 bg-slate-50 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
               />
             </div>
           </div>
 
           {/* Delivery Zone Feedback */}
           {pincodeStatus === "valid" && zoneDetails && (
-            <div className="flex items-start gap-2.5 rounded-xl bg-emerald-50 p-3 text-xs text-emerald-800">
-              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+            <div className="flex items-start gap-3 rounded-lg border-2 border-emerald-300 bg-emerald-50 p-4 text-emerald-950">
+              <CheckCircle2 className="h-6 w-6 shrink-0 text-emerald-700 mt-0.5" />
               <div>
-                <p className="font-semibold">
-                  Delivery Verified for {zoneDetails.town} ({zoneDetails.zoneName})
+                <p className="text-base font-bold text-emerald-900">
+                  Doorstep Delivery Confirmed for {zoneDetails.town} ({zoneDetails.zoneName})
                 </p>
-                <p className="mt-0.5 text-[11px] text-gray-600">
-                  Estimated Delivery: <strong>{zoneDetails.estimatedDelivery}</strong> | Delivery Fee:{" "}
-                  {zoneDetails.deliveryCharge === 0 ? "FREE" : `₹${zoneDetails.deliveryCharge}`}
+                <p className="mt-1 text-sm font-medium text-emerald-800">
+                  Estimated Arrival: <strong className="text-slate-900">{zoneDetails.estimatedDelivery}</strong> | Delivery Fee:{" "}
+                  <strong className="text-slate-900">
+                    {zoneDetails.deliveryCharge === 0 ? "FREE" : `₹${zoneDetails.deliveryCharge}`}
+                  </strong>
                 </p>
               </div>
             </div>
           )}
 
           {pincodeStatus === "invalid" && zoneDetails?.error && (
-            <div className="flex items-start gap-2.5 rounded-xl bg-rose-50 p-3 text-xs text-rose-800">
-              <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
-              <p>{zoneDetails.error}</p>
+            <div className="flex items-start gap-3 rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-amber-950">
+              <AlertCircle className="h-6 w-6 shrink-0 text-amber-700 mt-0.5" />
+              <p className="text-sm font-semibold">{zoneDetails.error}</p>
             </div>
           )}
         </div>
 
         {/* 3. Payment Method */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-gray-500">
+        <div className="rounded-xl border-2 border-slate-200 bg-white p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-slate-900 border-b border-slate-200 pb-2">
             3. Payment Method
           </h2>
 
-          <div className="space-y-3">
-            <label className="flex cursor-pointer items-center justify-between rounded-xl border-2 border-blue-600 bg-blue-50/30 p-4">
-              <div className="flex items-center gap-3">
+          <div>
+            <label className="flex cursor-pointer items-center justify-between rounded-xl border-2 border-blue-700 bg-blue-50/50 p-4">
+              <div className="flex items-center gap-3.5">
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="COD"
                   defaultChecked
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                  className="h-5 w-5 text-blue-700 focus:ring-blue-700 cursor-pointer"
                 />
                 <div>
-                  <span className="block text-sm font-bold text-gray-900">
-                    Pay on Delivery (Cash / UPI at Doorstep)
+                  <span className="block text-base font-bold text-slate-900">
+                    Pay on Delivery (Cash or UPI at Doorstep)
                   </span>
-                  <span className="block text-xs text-gray-500">
-                    Pay our delivery driver using Cash or any UPI App upon inspecting your order.
+                  <span className="block text-sm text-slate-600 mt-0.5">
+                    Inspect your product upon delivery, then pay with cash or any UPI app (GPay, PhonePe, Paytm).
                   </span>
                 </div>
               </div>
-              <div className="rounded-lg bg-blue-100 p-2 text-blue-700">
-                <DollarSign className="h-5 w-5" />
+              <div className="rounded-lg bg-blue-100 p-2.5 text-blue-800">
+                <DollarSign className="h-6 w-6" />
               </div>
             </label>
           </div>
@@ -330,32 +338,38 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
 
       {/* Order Summary & Confirmation Column */}
       <div className="space-y-4 lg:col-span-5">
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs space-y-5">
-          <h2 className="text-base font-bold text-gray-900">Order Items</h2>
+        <div className="rounded-xl border-2 border-slate-200 bg-white p-6 shadow-xs space-y-6">
+          <h2 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+            Review Your Order
+          </h2>
 
           {/* Items List */}
-          <div className="max-h-60 space-y-3 overflow-y-auto divide-y divide-gray-100 pr-1">
+          <div className="max-h-72 space-y-3.5 overflow-y-auto divide-y-2 divide-slate-100 pr-1">
             {cart.items.map((item) => (
-              <div key={item.productId} className="flex items-center gap-3 pt-3 first:pt-0">
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
-                  {item.product?.primary_image && (
+              <div key={item.productId} className="flex items-center gap-3.5 pt-3.5 first:pt-0">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                  {item.product?.primary_image ? (
                     <Image
                       src={item.product.primary_image}
                       alt={item.product.name}
                       fill
                       className="object-cover"
                     />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-slate-400">
+                      <Package className="h-6 w-6 text-slate-300" />
+                    </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="truncate text-xs font-semibold text-gray-900">
+                  <p className="truncate text-sm font-bold text-slate-900">
                     {item.product?.name}
                   </p>
-                  <p className="text-[11px] text-gray-500">
+                  <p className="text-xs font-semibold text-slate-500">
                     Qty: {item.quantity} × ₹{item.product?.price.toLocaleString("en-IN")}
                   </p>
                 </div>
-                <div className="text-xs font-bold text-gray-900">
+                <div className="text-base font-extrabold text-slate-900">
                   ₹{item.lineTotal.toLocaleString("en-IN")}
                 </div>
               </div>
@@ -363,28 +377,28 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
           </div>
 
           {/* Cost Breakdown */}
-          <div className="space-y-2.5 border-t border-gray-100 pt-4 text-xs">
-            <div className="flex justify-between text-gray-600">
-              <span>Items Subtotal</span>
-              <span className="font-semibold text-gray-900">
+          <div className="space-y-3 border-t-2 border-slate-200 pt-4 text-base">
+            <div className="flex justify-between text-slate-700">
+              <span>Items Total</span>
+              <span className="font-bold text-slate-900">
                 ₹{cart.subtotal.toLocaleString("en-IN")}
               </span>
             </div>
 
-            <div className="flex justify-between text-gray-600">
-              <span>Local Delivery Fee</span>
-              <span className="font-semibold text-gray-900">
+            <div className="flex justify-between text-slate-700">
+              <span>Delivery Fee</span>
+              <span className="font-bold text-slate-900">
                 {pincodeStatus === "valid"
                   ? deliveryFee === 0
                     ? "FREE"
                     : `₹${deliveryFee.toLocaleString("en-IN")}`
-                  : "Enter pincode above"}
+                  : "Enter pincode to see"}
               </span>
             </div>
 
-            <div className="border-t border-gray-100 pt-3 flex justify-between text-base font-bold text-gray-900">
+            <div className="border-t-2 border-slate-200 pt-3 flex justify-between text-lg font-extrabold text-slate-900">
               <span>Total Payable</span>
-              <span className="text-lg text-blue-600">
+              <span className="text-2xl font-black text-blue-700">
                 ₹{grandTotal.toLocaleString("en-IN")}
               </span>
             </div>
@@ -394,28 +408,28 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
           <button
             type="submit"
             disabled={isPending || pincodeStatus !== "valid"}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:bg-gray-400"
+            className="flex h-13 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:cursor-not-allowed disabled:bg-slate-400 transition-colors"
           >
             {isPending ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Confirming Order...</span>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Confirming Your Order...</span>
               </>
             ) : pincodeStatus !== "valid" ? (
-              "Enter Valid Delivery Pincode"
+              <span>Enter Valid Pincode Above to Proceed</span>
             ) : (
-              `Place Order (Pay ₹${grandTotal.toLocaleString("en-IN")} on Delivery)`
+              <span>Place Order (Pay ₹{grandTotal.toLocaleString("en-IN")} on Delivery)</span>
             )}
           </button>
 
-          <div className="space-y-2 border-t border-gray-100 pt-4 text-[11px] text-gray-500">
+          <div className="space-y-2 border-t border-slate-200 pt-4 text-xs font-semibold text-slate-600">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0" />
-              <span>No online pre-payment required. Pay after delivery.</span>
+              <ShieldCheck className="h-4 w-4 text-emerald-700 shrink-0" />
+              <span>Zero advance payment required. Inspect upon doorstep delivery.</span>
             </div>
             <div className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-blue-600 shrink-0" />
-              <span>Local doorstep dispatch within stated zone window.</span>
+              <Truck className="h-4 w-4 text-blue-700 shrink-0" />
+              <span>Direct delivery by our verified local store staff.</span>
             </div>
           </div>
         </div>

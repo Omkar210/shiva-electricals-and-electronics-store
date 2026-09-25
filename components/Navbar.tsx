@@ -9,6 +9,7 @@ import {
   Wrench,
   Package,
   Truck,
+  PhoneCall,
 } from "lucide-react";
 
 export default async function Navbar() {
@@ -18,97 +19,115 @@ export default async function Navbar() {
   ]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur-md">
-      {/* Top Banner for Local Trust */}
-      <div className="bg-blue-600 px-4 py-1.5 text-center text-xs font-medium text-white sm:px-6">
-        <span>⚡ Fast Local Delivery &amp; Certified Installation Services in Town &amp; Nearby Areas</span>
+    <header className="sticky top-0 z-40 border-b border-slate-200 bg-white shadow-xs">
+      {/* Top Banner for Local Trust & Direct Phone Assistance */}
+      <div className="bg-blue-900 px-4 py-2 text-white sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 text-sm font-medium">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-amber-400">⚡ Direct Store Delivery</span>
+            <span className="hidden sm:inline text-slate-200">|</span>
+            <span className="text-slate-100">Genuine RO Purifiers, Spares &amp; Doorstep Installation</span>
+          </div>
+          <a
+            href="tel:+919876543210"
+            className="flex items-center gap-1.5 rounded-md bg-blue-800 px-3 py-1 text-sm font-bold text-white hover:bg-blue-700 transition-colors"
+            aria-label="Call store support at +91 98765 43210"
+          >
+            <PhoneCall className="h-4 w-4 text-emerald-400" />
+            <span>Call Shop: +91 98765 43210</span>
+          </a>
+        </div>
       </div>
 
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
         {/* Brand Identity */}
-        <Link href="/" className="flex items-center gap-2 text-left">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 font-bold text-white shadow-xs">
+        <Link href="/" className="flex items-center gap-3 text-left">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-700 font-extrabold text-white text-lg shadow-sm">
             SE
           </div>
           <div>
-            <span className="block text-base font-bold leading-tight tracking-tight text-gray-900">
+            <span className="block text-lg sm:text-xl font-bold leading-tight tracking-tight text-slate-900">
               Shiva Electrical
             </span>
-            <span className="block text-xs font-medium text-blue-600">
-              &amp; Electronics
+            <span className="block text-sm font-semibold text-blue-700">
+              &amp; Electronics Store
             </span>
           </div>
         </Link>
 
         {/* Search Bar */}
         <div className="hidden flex-1 max-w-md md:block">
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <form action="/products" method="GET" className="relative">
+            <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
             <input
               type="search"
-              placeholder="Search RO purifiers, spare filters, fans..."
-              className="w-full rounded-full border border-gray-200 bg-gray-50/70 py-2 pl-10 pr-4 text-xs text-gray-900 placeholder:text-gray-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+              name="q"
+              placeholder="Search RO filters, ceiling fans, spares..."
+              className="h-11 w-full rounded-lg border-2 border-slate-300 bg-white py-2 pl-11 pr-4 text-base text-slate-900 placeholder:text-slate-500 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
             />
-          </div>
+          </form>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex items-center gap-1 sm:gap-2">
+        <nav className="flex items-center gap-2 sm:gap-3" aria-label="Main Navigation">
           <Link
-            href="/#categories"
-            className="hidden items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 md:flex"
+            href="/products"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 md:flex transition-colors"
           >
-            <Package className="h-4 w-4 text-gray-500" />
-            Catalog
+            <Package className="h-4 w-4 text-slate-600" />
+            <span>Products</span>
           </Link>
 
           <Link
             href="/#services"
-            className="hidden items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 md:flex"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 md:flex transition-colors"
           >
-            <Wrench className="h-4 w-4 text-gray-500" />
-            Services
+            <Wrench className="h-4 w-4 text-slate-600" />
+            <span>Services</span>
           </Link>
 
           <Link
             href="/delivery"
-            className="hidden items-center gap-1 rounded-lg px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 sm:flex"
+            className="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-base font-semibold text-slate-700 hover:bg-slate-100 hover:text-blue-700 sm:flex transition-colors"
           >
-            <Truck className="h-4 w-4 text-gray-500" />
-            Delivery
+            <Truck className="h-4 w-4 text-slate-600" />
+            <span>Delivery</span>
           </Link>
 
-          {/* Cart Icon */}
+          {/* Cart with Explicit Visible Text */}
           <Link
             href="/cart"
-            aria-label="Shopping Cart"
-            className="relative flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 hover:text-blue-600"
+            className="relative flex h-11 items-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-3.5 text-base font-bold text-slate-800 hover:border-blue-700 hover:text-blue-700 transition-colors shadow-2xs"
+            aria-label={`Shopping Cart with ${cartCount} items`}
           >
-            <ShoppingBag className="h-5 w-5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-bold text-white shadow-xs">
+            <ShoppingBag className="h-5 w-5 text-blue-700" />
+            <span className="hidden xs:inline">Cart</span>
+            {cartCount > 0 ? (
+              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-blue-700 px-1.5 text-xs font-bold text-white">
                 {cartCount > 99 ? "99+" : cartCount}
               </span>
+            ) : (
+              <span className="text-slate-500 font-normal text-sm">(0)</span>
             )}
           </Link>
 
           {/* User Account / Auth */}
           {profile ? (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {(profile.role === "admin" || profile.role === "staff") && (
                 <Link
                   href="/admin"
-                  className="hidden items-center gap-1 rounded-lg bg-purple-50 px-2.5 py-1.5 text-xs font-semibold text-purple-700 hover:bg-purple-100 sm:flex"
+                  className="hidden items-center gap-1.5 rounded-lg bg-purple-50 border border-purple-200 px-3 py-2 text-sm font-bold text-purple-800 hover:bg-purple-100 sm:flex"
                 >
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  Admin
+                  <ShieldCheck className="h-4 w-4 text-purple-700" />
+                  <span>Admin</span>
                 </Link>
               )}
               <Link
                 href="/account"
-                className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-800 hover:bg-gray-50"
+                className="flex h-11 items-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-3.5 text-base font-semibold text-slate-800 hover:bg-slate-50 hover:border-slate-400 transition-colors"
               >
-                <User className="h-4 w-4 text-blue-600" />
+                <User className="h-4 w-4 text-blue-700" />
                 <span className="hidden sm:inline">
                   {profile.full_name?.split(" ")[0] || "Account"}
                 </span>
@@ -117,10 +136,10 @@ export default async function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-700"
+              className="flex h-11 items-center gap-2 rounded-lg bg-blue-700 px-4 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 transition-colors"
             >
-              <User className="h-3.5 w-3.5" />
-              Log In
+              <User className="h-4 w-4" />
+              <span>Log In</span>
             </Link>
           )}
         </nav>

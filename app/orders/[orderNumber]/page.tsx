@@ -10,7 +10,7 @@ import {
   Truck,
   ArrowLeft,
   CreditCard,
-  History,
+  PhoneCall,
 } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -29,7 +29,7 @@ export async function generateMetadata({
     };
   }
   return {
-    title: `Order ${orderNumber} Tracking`,
+    title: `Order #${orderNumber} Details & Tracking`,
   };
 }
 
@@ -54,24 +54,24 @@ export default async function OrderTrackingPage({
       <div>
         <Link
           href="/orders"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 transition-colors"
+          className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-800 hover:bg-slate-50 transition-colors shadow-2xs"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to My Orders
+          <span>Back to All Orders</span>
         </Link>
       </div>
 
       {/* Order Header Card */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs sm:p-8 space-y-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-gray-100 pb-5">
+      <div className="rounded-xl border-2 border-slate-200 bg-white p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b-2 border-slate-100 pb-5">
           <div className="space-y-1">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
-              Order Details
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Order Details &amp; Receipt
             </span>
-            <h1 className="text-xl sm:text-2xl font-black font-mono text-gray-900">
-              {order.order_number}
+            <h1 className="text-2xl sm:text-3xl font-black font-mono text-slate-900">
+              #{order.order_number}
             </h1>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm font-medium text-slate-600">
               Placed on {new Date(order.created_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}
             </p>
           </div>
@@ -91,39 +91,39 @@ export default async function OrderTrackingPage({
         {/* Delivery Details & Logistics */}
         <div className="grid gap-6 sm:grid-cols-2 pt-2">
           {/* Shipping Address */}
-          <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-5 space-y-2 text-xs">
-            <div className="flex items-center gap-2 font-bold text-gray-900">
-              <MapPin className="h-4 w-4 text-blue-600" />
+          <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-5 space-y-2 text-base">
+            <div className="flex items-center gap-2 font-bold text-slate-900 border-b border-slate-200 pb-2">
+              <MapPin className="h-5 w-5 text-blue-700" />
               <span>Doorstep Delivery Address</span>
             </div>
-            <p className="font-semibold text-gray-800">{address.name}</p>
-            <p className="text-gray-600">{address.address_line_1}</p>
-            {address.address_line_2 && <p className="text-gray-600">{address.address_line_2}</p>}
-            {address.landmark && <p className="text-gray-500">Landmark: {address.landmark}</p>}
-            <p className="text-gray-600">{address.city}, {address.state} — {address.pincode}</p>
-            <p className="text-gray-700 font-medium">Contact: {address.phone}</p>
+            <p className="font-bold text-slate-900">{address.name}</p>
+            <p className="text-slate-700">{address.address_line_1}</p>
+            {address.address_line_2 && <p className="text-slate-700">{address.address_line_2}</p>}
+            {address.landmark && <p className="text-slate-600">Landmark: {address.landmark}</p>}
+            <p className="text-slate-800 font-semibold">{address.city}, {address.state} — {address.pincode}</p>
+            <p className="text-slate-900 font-bold pt-1">Contact: {address.phone}</p>
           </div>
 
           {/* Delivery & Payment Info */}
-          <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-5 space-y-3 text-xs">
-            <div className="flex items-center gap-2 font-bold text-blue-900">
-              <Truck className="h-4 w-4 text-blue-600" />
-              <span>Logistics &amp; Payment</span>
+          <div className="rounded-xl border-2 border-blue-200 bg-blue-50/60 p-5 space-y-3 text-base">
+            <div className="flex items-center gap-2 font-bold text-blue-900 border-b border-blue-200 pb-2">
+              <Truck className="h-5 w-5 text-blue-700" />
+              <span>Logistics &amp; Payment Status</span>
             </div>
-            <div className="space-y-1 text-gray-700">
-              <p>Delivery Area: <strong>{address.zone_name || "Direct Local Zone"} ({address.town})</strong></p>
-              <p>ETA: <strong>{address.estimated_delivery || "Standard delivery"}</strong></p>
+            <div className="space-y-1.5 text-slate-800">
+              <p>Delivery Area: <strong>{address.zone_name || "Local Zone"} ({address.town})</strong></p>
+              <p>Estimated Delivery: <strong>{address.estimated_delivery || "Standard delivery"}</strong></p>
             </div>
-            <div className="border-t border-blue-200/60 pt-2 flex items-center justify-between text-gray-700">
+            <div className="border-t border-blue-200 pt-2 flex items-center justify-between text-slate-900 font-bold">
               <div className="flex items-center gap-1.5">
-                <CreditCard className="h-3.5 w-3.5 text-blue-600" />
-                <span>Payment:</span>
+                <CreditCard className="h-5 w-5 text-blue-700" />
+                <span>Payment Terms:</span>
               </div>
-              <span className="font-semibold">
+              <span>
                 {order.payment_status === "PAID" ? (
-                  <span className="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full font-bold">PAID</span>
+                  <span className="text-emerald-900 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full text-sm font-bold">PAID</span>
                 ) : (
-                  <span className="text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full font-bold">Pay on Delivery</span>
+                  <span className="text-amber-950 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full text-sm font-bold">Pay on Delivery</span>
                 )}
               </span>
             </div>
@@ -132,24 +132,24 @@ export default async function OrderTrackingPage({
 
         {/* Ordered Items Breakdown */}
         <div className="space-y-3 pt-4">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-gray-500">
-            Order Items ({items.length})
+          <h2 className="text-lg font-bold text-slate-900">
+            Ordered Products ({items.length})
           </h2>
 
-          <div className="divide-y divide-gray-100 rounded-xl border border-gray-100 bg-white">
+          <div className="divide-y-2 divide-slate-100 rounded-xl border-2 border-slate-200 bg-white">
             {items.map((item) => (
-              <div key={item.id} className="flex items-center justify-between p-4 text-xs">
-                <div className="space-y-0.5">
+              <div key={item.id} className="flex items-center justify-between p-4 text-base">
+                <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <Package className="h-4 w-4 text-gray-400" />
-                    <span className="font-bold text-gray-900">{item.product_name_snapshot}</span>
+                    <Package className="h-5 w-5 text-slate-400" />
+                    <span className="font-bold text-slate-900">{item.product_name_snapshot}</span>
                   </div>
-                  <div className="text-[11px] font-mono text-gray-400 pl-6">
+                  <div className="text-sm font-mono text-slate-600 pl-7">
                     SKU: {item.sku_snapshot} | Qty: {item.quantity} × ₹{item.unit_price.toLocaleString("en-IN")}
                   </div>
                 </div>
 
-                <div className="text-right font-bold text-gray-900">
+                <div className="text-right text-lg font-extrabold text-slate-900">
                   ₹{item.subtotal.toLocaleString("en-IN")}
                 </div>
               </div>
@@ -158,51 +158,45 @@ export default async function OrderTrackingPage({
         </div>
 
         {/* Financial Summary */}
-        <div className="space-y-2 border-t border-gray-100 pt-4 text-xs">
-          <div className="flex justify-between text-gray-600">
+        <div className="space-y-2.5 border-t-2 border-slate-200 pt-5 text-base">
+          <div className="flex justify-between text-slate-700">
             <span>Items Subtotal</span>
-            <span className="font-semibold text-gray-900">₹{order.subtotal.toLocaleString("en-IN")}</span>
+            <span className="font-bold text-slate-900">₹{order.subtotal.toLocaleString("en-IN")}</span>
           </div>
-          <div className="flex justify-between text-gray-600">
-            <span>Delivery Charge</span>
-            <span className="font-semibold text-gray-900">
+          <div className="flex justify-between text-slate-700">
+            <span>Local Delivery Fee</span>
+            <span className="font-bold text-slate-900">
               {order.delivery_fee === 0 ? "FREE" : `₹${order.delivery_fee.toLocaleString("en-IN")}`}
             </span>
           </div>
           {order.discount > 0 && (
-            <div className="flex justify-between text-emerald-600">
-              <span>Discount</span>
-              <span className="font-semibold">-₹{order.discount.toLocaleString("en-IN")}</span>
+            <div className="flex justify-between text-emerald-800 font-semibold">
+              <span>Promotional Discount</span>
+              <span>-₹{order.discount.toLocaleString("en-IN")}</span>
             </div>
           )}
-          <div className="border-t border-gray-100 pt-3 flex justify-between text-base font-bold text-gray-900">
-            <span>Total Amount</span>
-            <span className="text-lg text-blue-600">₹{order.total.toLocaleString("en-IN")}</span>
+          <div className="border-t-2 border-slate-200 pt-3 flex justify-between text-lg font-extrabold text-slate-900">
+            <span>Total Payable Amount</span>
+            <span className="text-2xl font-black text-blue-700">₹{order.total.toLocaleString("en-IN")}</span>
           </div>
         </div>
 
-        {/* Order History Notes if any */}
-        {history.length > 0 && (
-          <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 space-y-2 text-xs">
-            <div className="flex items-center gap-2 font-bold text-gray-700">
-              <History className="h-3.5 w-3.5 text-gray-500" />
-              <span>Status Activity Log</span>
-            </div>
-            <div className="space-y-1.5 divide-y divide-gray-100">
-              {history.map((h) => (
-                <div key={h.id} className="pt-1.5 flex justify-between items-start text-[11px]">
-                  <div>
-                    <span className="font-semibold text-gray-800">{h.new_status}</span>
-                    {h.note && <span className="text-gray-500 ml-2">— {h.note}</span>}
-                  </div>
-                  <span className="text-gray-400 font-mono shrink-0">
-                    {new Date(h.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-              ))}
+        {/* Support Reassurance Card */}
+        <div className="rounded-xl border-2 border-slate-300 bg-slate-50 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <PhoneCall className="h-6 w-6 text-blue-700 shrink-0" />
+            <div>
+              <p className="text-base font-bold text-slate-900">Need to schedule or modify delivery time?</p>
+              <p className="text-sm text-slate-600">Call our shop technician directly to arrange delivery hours.</p>
             </div>
           </div>
-        )}
+          <a
+            href="tel:+919876543210"
+            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-bold text-white hover:bg-blue-800 transition-colors shrink-0"
+          >
+            <span>Call Shop: +91 98765 43210</span>
+          </a>
+        </div>
       </div>
     </div>
   );

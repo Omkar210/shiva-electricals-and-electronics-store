@@ -1,27 +1,33 @@
 @import "tailwindcss";
 
-:root {
-  --foreground: #171717;
-  --background: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground: #ededed;
-    --background: #0a0a0a;
+    --brand-primary: #1d4ed8;
+    --brand-primary-hover: #1e40af;
+    --brand-surface: #eff6ff;
+    --text-primary: #0f172a;
+    --text-body: #334155;
+    --text-secondary: #475569;
+    --border-default: #cbd5e1;
   }
-}
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
 
-/* Ensure consistent focus ring for accessibility */
-*:focus-visible {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
+  body {
+    color: #0f172a;
+    background-color: #f8fafc;
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Clear, senior-friendly focus rings for keyboard & assistive navigation */
+  *:focus-visible {
+    outline: 3px solid #1d4ed8 !important;
+    outline-offset: 2px !important;
+  }
 }

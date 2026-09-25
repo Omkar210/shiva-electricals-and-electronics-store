@@ -3,7 +3,7 @@ import { getCategories } from "@/lib/catalog/categories";
 import { getProducts } from "@/lib/catalog/products";
 import ProductCard from "@/components/catalog/ProductCard";
 import SearchFilterBar from "@/components/catalog/SearchFilterBar";
-import { SearchX, ArrowLeft } from "lucide-react";
+import { SearchX, ArrowLeft, PhoneCall } from "lucide-react";
 
 export default async function ProductsPage({
   searchParams,
@@ -12,7 +12,9 @@ export default async function ProductsPage({
 }) {
   const resolvedParams = await searchParams;
   const categorySlug = typeof resolvedParams.category === "string" ? resolvedParams.category : undefined;
-  const query = typeof resolvedParams.q === "string" ? resolvedParams.q : undefined;
+  const query = typeof resolvedParams.q === "string" 
+    ? resolvedParams.q 
+    : (typeof resolvedParams.search === "string" ? resolvedParams.search : undefined);
   const rawSort = typeof resolvedParams.sort === "string" ? resolvedParams.sort : undefined;
   const sort = rawSort === "price_asc" || rawSort === "price_desc" || rawSort === "newest" ? rawSort : "newest";
   const inStockOnly = resolvedParams.inStock === "true";
@@ -32,25 +34,25 @@ export default async function ProductsPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-          <Link href="/" className="hover:text-blue-600">Home</Link>
+      {/* Accessible Breadcrumbs & Page Header */}
+      <div className="space-y-2 border-b-2 border-slate-200 pb-5">
+        <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-sm font-semibold text-slate-600 mb-2">
+          <Link href="/" className="hover:text-blue-700 hover:underline">Home</Link>
           <span>/</span>
-          <span className="text-gray-900 font-medium">Products</span>
+          <span className="text-slate-900 font-bold">Catalog</span>
           {activeCategoryName && (
             <>
               <span>/</span>
-              <span className="text-blue-600 font-semibold">{activeCategoryName}</span>
+              <span className="text-blue-700 font-bold">{activeCategoryName}</span>
             </>
           )}
-        </div>
+        </nav>
 
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-          {activeCategoryName || "All Products"}
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          {activeCategoryName || "All Products & Spares"}
         </h1>
-        <p className="mt-1 text-xs text-gray-500 sm:text-sm">
-          Showing {products.length} of {total} available items
+        <p className="text-base text-slate-600">
+          Showing <strong className="text-slate-900">{products.length}</strong> of <strong className="text-slate-900">{total}</strong> verified items in our local inventory
         </p>
       </div>
 
@@ -65,31 +67,34 @@ export default async function ProductsPage({
           ))}
         </div>
       ) : (
-        /* Zero Results Guidance per Section 8 of DESIGN.md */
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50/50 p-12 text-center">
-          <SearchX className="mx-auto h-12 w-12 text-gray-400" />
-          <h2 className="mt-4 text-base font-bold text-gray-900">
-            No products found matching your search
+        /* Zero Results Guidance with Senior-Friendly Recovery */
+        <div className="rounded-xl border-2 border-dashed border-slate-300 bg-white p-8 sm:p-12 text-center space-y-4 shadow-2xs">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
+            <SearchX className="h-8 w-8" />
+          </div>
+          <h2 className="text-xl font-bold text-slate-900">
+            No products matched your search
           </h2>
-          <p className="mx-auto mt-1 max-w-md text-xs text-gray-500">
-            Try checking spelling, removing active filters, or browsing other categories.
+          <p className="mx-auto max-w-lg text-base text-slate-600 leading-relaxed">
+            We might still have the part or purifier in our physical shop! You can clear filters, check all items, or call our technician directly.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/products"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-xs font-semibold text-gray-700 shadow-xs hover:bg-gray-50"
+              className="flex h-11 items-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-5 text-sm font-bold text-slate-800 hover:bg-slate-100 transition-colors"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Reset All Filters
+              <ArrowLeft className="h-4 w-4" />
+              <span>Reset All Filters</span>
             </Link>
 
-            <Link
-              href="/products?category=ro-spare-parts"
-              className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-700"
+            <a
+              href="tel:+919876543210"
+              className="flex h-11 items-center gap-2 rounded-lg bg-blue-700 px-5 text-sm font-bold text-white hover:bg-blue-800 transition-colors shadow-xs"
             >
-              Browse RO Spare Parts
-            </Link>
+              <PhoneCall className="h-4 w-4" />
+              <span>Ask Shop: +91 98765 43210</span>
+            </a>
           </div>
         </div>
       )}

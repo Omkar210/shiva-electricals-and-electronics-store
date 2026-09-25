@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "21st-ui": {
+      "source": "21st-dev/magic-mcp",
+      "sourceType": "github",
+      "skillPath": "skills/21st-ui/SKILL.md",
+      "computedHash": "c4d00010908d5144d483ae351005bdc73de4dea2d1e423e43c66a8a6aa9c4417"
+    },
+    "design-md": {
+      "source": "nolly-studio/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/design-md/SKILL.md",
+      "computedHash": "9971480b26902bf1318f742e8816deb0ff4b8d31dcc23f53f9c3bff58e5946ff"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "106acf230014cbb43ca34e6410371321b56ca742f9ee0442e8ec05bf02eb0384"
+    }
+  }
+}
