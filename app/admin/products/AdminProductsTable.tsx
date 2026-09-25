@@ -6,7 +6,8 @@ import Image from "next/image";
 import type { ProductItem } from "@/lib/catalog/products";
 import { handleToggleActive } from "./actions";
 import DriveMediaPickerModal from "@/components/admin/DriveMediaPickerModal";
-import { ExternalLink, Copy, Check, HardDrive, Package } from "lucide-react";
+import DriveConnectionsModal from "@/components/admin/DriveConnectionsModal";
+import { ExternalLink, Copy, Check, HardDrive, Package, Network } from "lucide-react";
 
 interface AdminProductsTableProps {
   products: ProductItem[];
@@ -14,6 +15,7 @@ interface AdminProductsTableProps {
 
 export default function AdminProductsTable({ products }: AdminProductsTableProps) {
   const [activeProductForMedia, setActiveProductForMedia] = useState<ProductItem | null>(null);
+  const [isConnectionsModalOpen, setIsConnectionsModalOpen] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopyId = (id: string) => {
@@ -34,6 +36,20 @@ export default function AdminProductsTable({ products }: AdminProductsTableProps
 
   return (
     <>
+      <div className="flex items-center justify-between border-b border-gray-100 bg-gray-50/70 px-4 py-2.5">
+        <div className="text-xs font-semibold text-gray-600">
+          Showing {products.length} products
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsConnectionsModalOpen(true)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 shadow-xs hover:bg-blue-100 transition-colors"
+        >
+          <Network className="h-3.5 w-3.5" />
+          <span>Drive &amp; Supabase Image Connections</span>
+        </button>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 text-left text-xs sm:text-sm">
           <thead className="bg-gray-50 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
@@ -176,6 +192,12 @@ export default function AdminProductsTable({ products }: AdminProductsTableProps
           onClose={() => setActiveProductForMedia(null)}
         />
       )}
+
+      {/* Drive Connections Full Manager Modal */}
+      <DriveConnectionsModal
+        isOpen={isConnectionsModalOpen}
+        onClose={() => setIsConnectionsModalOpen(false)}
+      />
     </>
   );
 }
