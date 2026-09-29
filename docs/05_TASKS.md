@@ -483,7 +483,96 @@ Status: DONE
 
 ------------------------------------------------------------------------
 
-# Phase 13 --- Future Enhancements
+# Phase 14 --- Google Drive Primary Media Storage Integration
+
+## T140 --- Drive API streaming proxy & product ID routing
+
+Status: DONE
+
+-   Implemented `/api/media/drive/product/[productId]` server-side streaming proxy using Google Drive API and service account credentials.
+-   Configured deterministic file matching by Product UUID and file extension patterns.
+-   Added immutable HTTP caching (`Cache-Control: public, max-age=31536000, immutable`).
+-   Implemented dynamic, responsive SVG fallback placeholder with brand and product details when files are missing or unconfigured.
+
+## T141 --- Supabase metadata linkage & Admin drive controls
+
+Status: DONE
+
+-   Linked Drive storage to PostgreSQL `product_images` schema (`storage_provider = 'google_drive'`, `external_id = <drive_file_id>`).
+-   Implemented `DriveMediaPickerModal`, `DriveSyncButton`, and `DriveConnectionsModal` for admin product management.
+
+------------------------------------------------------------------------
+
+# Phase 15 --- Security Hardening, OWASP Defense-in-Depth & Security Audits
+
+## T150 --- Five authoritative security audits
+
+Status: DONE
+
+-   Completed `security/SECURITY_AUDIT.md` (OWASP Top 10:2025 & API Security Top 10:2023).
+-   Completed `security/SECURITY_FINDINGS.md` (CVSS v3.1 defect catalog and remediations).
+-   Completed `security/DEPENDENCY_AUDIT.md` (zero-vulnerability supply chain audit).
+-   Completed `security/SECRETS_AUDIT.md` (git history and environment secret scan).
+-   Completed `security/SECURITY_TESTS.md` (security test execution matrix).
+
+## T151 --- Order IDOR protection & verification modal
+
+Status: DONE
+
+-   Enforced ephemeral cryptographically signed HttpOnly cookies (`shiva_order_auth_<orderNumber>`) for checkout tracking.
+-   Added `OrderVerificationCard.tsx` verification flow (phone/email check) for guest lookups when tracking cookie is absent.
+
+## T152 --- Rate limiting, SSRF, open redirect & magic bytes verification
+
+Status: DONE
+
+-   Implemented configurable sliding-window rate limiting in `lib/security/rate-limit.ts`.
+-   Implemented SSRF validator blocking loopback, RFC1918, and AWS/GCP metadata IP in `lib/security/validation.ts`.
+-   Implemented strict open redirect validation in `lib/security/validation.ts`.
+-   Implemented deep file signature (magic bytes) verification for image uploads.
+-   Configured strict HTTP security headers (CSP, HSTS 2-year preload, X-Frame-Options: DENY, nosniff) in `next.config.ts`.
+
+------------------------------------------------------------------------
+
+# Phase 16 --- Legal, DPDP & Indian E-Commerce Compliance
+
+## T160 --- Statutory policy routes & cookie consent
+
+Status: DONE
+
+-   Created `/privacy-policy` compliant with DPDP Act, 2023 and Indian E-Commerce Rules, 2020.
+-   Created `/terms`, `/refund-policy`, and `/cookie-policy`.
+-   Created accessible `CookieBanner.tsx` with persistent localStorage consent.
+-   Integrated legal policies into dynamic `app/sitemap.ts` and global footer.
+
+------------------------------------------------------------------------
+
+# Phase 17 --- AI-Assisted Multi-Angle Product Ingestion & Spec Extraction
+
+## T170 --- Google Gemini multimodal vision packaging scanner
+
+Status: DONE
+
+-   Implemented `components/admin/ProductImageScanner.tsx` supporting up to 5 multi-angle packaging photos.
+-   Implemented `lib/ai/product-scanner.ts` with Google Gemini 2.5 Flash / Flash Lite and structured JSON schema extraction.
+-   Implemented `app/api/admin/products/scan-images/route.ts` with admin role verification and XSS sanitization.
+-   Added auto-fill into `ProductForm` fields.
+
+------------------------------------------------------------------------
+
+# Phase 18 --- Test Suite Expansion & Quality Assurance
+
+## T180 --- Automated test suite expansion
+
+Status: DONE
+
+-   Expanded automated unit tests from 26 to 62 tests across 16 test suites using Node 24 native test runner.
+-   Added unit test suites for Google Drive storage, AI product scanner, security guardrails, metadata SEO resiliency, pricing calculations, state machine transitions, and delivery rules.
+-   Zero TypeScript errors (`tsc --noEmit`), zero ESLint errors (`eslint .`), 100% test pass rate.
+
+------------------------------------------------------------------------
+
+# Phase 19 --- Future Enhancements
 
 Possible later features:
 

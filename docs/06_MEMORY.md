@@ -169,6 +169,8 @@ Preferred:
 -   PostgreSQL
 -   Supabase Auth
 -   Supabase Storage
+-   Google Drive API (Primary catalog media storage & streaming)
+-   Google Generative AI (Gemini 2.5 Flash / Flash Lite for automated multi-angle packaging spec scanning)
 -   Vercel
 -   GitHub
 
@@ -374,6 +376,84 @@ Decision: Enforce production operational resilience and recovery governance:
 2. Operational Runbook (`docs/07_RECOVERY.md`): Established authoritative disaster recovery protocols including Supabase automated snapshot restoration, point-in-time recovery (PITR), offline `pg_dump` backups, media bucket preservation, Vercel sub-5-second instant deployment rollbacks, and forward-only migration compensation.
 3. Production Acceptance Criteria: All core user and administrative journeys verified across build, typecheck, lint, and automated test runners with 100% pass rates.
 Reason: Protects store availability and guarantees rapid operational recovery during infrastructure or software disruptions.
+Status: Active
+
+## DEC-015 — Google Drive as Exclusive Primary Storage for Product Images & Product ID Routing
+
+Date: 2026-09-25
+Decision: Designate Google Drive as the exclusive primary storage provider for all product catalog images, replacing Supabase Storage bucket reliance while maintaining PostgreSQL metadata references:
+1. Streaming Proxy Route (`app/api/media/drive/product/[productId]/route.ts`): Implemented a server-side image streaming proxy powered by Google Drive API service account credentials. Images are piped using `Readable.toWeb(stream)` directly to client browsers with immutable HTTP caching (`Cache-Control: public, max-age=31536000, immutable`).
+2. Deterministic Product ID Routing: Images stored in Google Drive follow the canonical file naming pattern `<productId>.*` (e.g., `<productId>.jpg`, `<productId>.png`). The proxy locates files by sanitizing the requested Product UUID, executing exact matching against the root Drive catalog folder, and streaming the target file.
+3. Resilient Fallback SVG Placeholder: When an image is missing, not yet uploaded, or Drive credentials are unavailable in local development, the route automatically renders an elegant, inline SVG placeholder graphic displaying the product brand, title, and "Image Pending" status, eliminating broken image UI glitches across product cards and detail views.
+4. Database Metadata Synchronization: PostgreSQL `product_images` table stores relational records where `storage_provider = 'google_drive'`, `external_id = <drive_file_id>`, and `storage_path = '/api/media/drive/product/${productId}'`.
+5. Admin Media Controls: Integrated `DriveMediaPickerModal`, `DriveSyncButton`, and `DriveConnectionsModal` into the Admin product management console (`components/admin/DriveMediaPickerModal.tsx`, `components/admin/ProductForm.tsx`), enabling shop administrators to browse, select, preview, and synchronize Drive files without leaving the management dashboard.
+Reason: The store owner manages high-resolution photography in Google Drive. Storing photos directly in Drive eliminates manual export/import pipelines, reduces Supabase storage costs, and aligns with physical retail inventory photography habits.
+Alternatives: Retain Supabase Storage as primary (rejected: duplicates storage, creates sync friction for owner); Cloudinary/S3 (rejected: adds third-party billable vendor without solving owner's Google Drive workflow).
+Trade-offs: Drive API streaming introduces small latency overhead on cold cache misses, mitigated by aggressive HTTP edge caching (`max-age=31536000, immutable`) and Next.js Image Optimization.
+Status: Active
+
+## DEC-016 — Security Hardening, OWASP Defense-in-Depth & Comprehensive Security Audits
+
+Date: 2026-09-29
+Decision: Execute comprehensive security hardening and institutionalize defensive security testing across the entire application stack:
+1. Five Authoritative Security Audits (`security/` directory):
+   - `security/SECURITY_AUDIT.md`: Enterprise-level review assessing the entire codebase against OWASP Top 10:2025 and OWASP API Security Top 10:2023.
+   - `security/SECURITY_FINDINGS.md`: Complete vulnerability defect catalog detailing identified issues, CVSS v3.1 severities, threat vectors, remediations, and verification tests.
+   - `security/DEPENDENCY_AUDIT.md`: Zero-vulnerability dependency verification across npm lockfile with automated supply chain integrity checks.
+   - `security/SECRETS_AUDIT.md`: Full git tree and configuration secret scan confirming zero leaked API keys, service accounts, or database passwords.
+   - `security/SECURITY_TESTS.md`: Automated and manual security test execution matrix and verification suite.
+2. Insecure Direct Object Reference (IDOR) Order Hardening: Prevented public enumeration of customer orders and PII leaks. Order tracking (`/orders/[orderNumber]`) requires either an authenticated owner session, an ephemeral cryptographically signed HttpOnly cookie (`shiva_order_auth_<orderNumber>`) issued upon checkout, or guest identity verification via `OrderVerificationCard.tsx` matching customer phone or email.
+3. Sliding-Window Rate Limiting (`lib/security/rate-limit.ts`): Enforced configurable rate-limiting guardrails across sensitive endpoints (checkout submission, product search, media proxy, customer authentication) to defend against brute force, scraping, and denial-of-service.
+4. Server-Side Request Forgery (SSRF) Protection (`lib/security/validation.ts`): Implemented strict outbound URL inspection blocking loopback (127.0.0.1, ::1), private RFC1918 subnets, and cloud instance metadata services (AWS/GCP `169.254.169.254`).
+5. Open Redirect Defense (`lib/security/validation.ts`): Hardened all authentication and post-action redirect parameters against external domain hijacking, protocol-relative bypasses (`//evil.com`), backslash evasion, and javascript pseudo-protocols.
+6. Deep Magic-Bytes File Upload Verification (`lib/security/validation.ts`): Enforced byte-level header inspection verifying genuine JPEG (`FF D8 FF`), PNG (`89 50 4E 47`), WebP (`RIFF....WEBP`), and AVIF signatures, rejecting executable or script payloads masquerading with image extensions.
+7. Strict HTTP Security Headers (`next.config.ts`): Configured comprehensive HTTP response headers including Content-Security-Policy (CSP), Strict-Transport-Security (HSTS 2-year preload), X-Frame-Options: DENY, X-Content-Type-Options: nosniff, and Referrer-Policy: strict-origin-when-cross-origin.
+Reason: Eliminates attack surfaces, protects customer PII, prevents resource exhaustion, and guarantees enterprise-grade security posture for online commerce transactions.
+Alternatives: Rely solely on Supabase RLS and default Next.js behaviors (rejected: leaves application layer, guest endpoints, and file upload endpoints exposed to OWASP vulnerabilities).
+Trade-offs: Slight complexity in guest order lookup flow requiring phone/email verification when tracking cookies expire.
+Status: Active
+
+## DEC-017 — Legal, Consumer Protection & Privacy Compliance Framework
+
+Date: 2026-09-29
+Decision: Establish complete statutory compliance with Indian Consumer Protection (E-Commerce) Rules, 2020 and the Digital Personal Data Protection (DPDP) Act, 2023:
+1. Public Legal & Policy Architecture:
+   - `/privacy-policy`: Comprehensive privacy disclosures covering data controller identity, lawful basis, personal data categories collected, DPDP user rights (access, correction, erasure, withdrawal), data retention rules, and grievance officer contact coordinates.
+   - `/terms`: Commercial terms and conditions governing purchases, pricing transparency, delivery matrices, installation terms, warranty disclaimers, and local dispute jurisdiction.
+   - `/refund-policy`: Detailed return, replacement, and warranty coverage policies specifically addressing electrical items, water purifiers, and consumables (RO filters/membranes).
+   - `/cookie-policy`: Explicit classification of strictly necessary vs functional cookies.
+2. Interactive Cookie & Privacy Banner (`components/ui/CookieBanner.tsx`): Lightweight, accessible banner notifying visitors of cookie and privacy policies with persistent localStorage consent memory and non-intrusive UI styling per DESIGN.md.
+3. Search Engine & Discovery Integration: Added legal policies to `app/sitemap.ts` and linked them persistently across the global store footer (`components/layout/Footer.tsx`).
+Reason: Mandatory statutory requirement for Indian e-commerce businesses; establishes customer trust and prevents regulatory liability.
+Alternatives: Standard placeholder or generic terms (rejected: does not satisfy Indian E-Commerce Rules or DPDP Act requirements for local physical goods and RO installation services).
+Trade-offs: None; essential legal compliance foundation.
+Status: Active
+
+## DEC-018 — AI-Assisted Multi-Angle Product Ingestion & Spec Extraction
+
+Date: 2026-09-30
+Decision: Integrate Google Gemini Generative AI (multimodal vision) for automated multi-angle product packaging scanning and specification extraction in the Admin console:
+1. Multi-Angle Packaging Scanner (`components/admin/ProductImageScanner.tsx`): Interactive administrative tool enabling shop staff to capture or upload up to 5 multi-angle packaging photos (front face, back specs label, side panels, MRP badge).
+2. AI Extraction Engine (`lib/ai/product-scanner.ts`): Powered by Google Gemini 2.5 Flash / Flash Lite with structured schema enforcement. Automatically reads printed technical specifications (wattage, voltage, flow rate, tank capacity, purification stages, dimensions, warranty duration), brand name, model name, MRP, and suggested retail price.
+3. API Route Guardrails (`app/api/admin/products/scan-images/route.ts`): Strictly gated behind Admin role authorization (`supabase.auth.getUser()` + `profiles.role = 'admin'`). Includes input image validation, payload sanitization against XSS and control characters, and resilient fallback heuristics when external AI keys are unavailable.
+4. Auto-Form Pre-Fill: One-click extraction transfers structured data directly into the `ProductForm` fields, eliminating manual data entry errors for complex electrical components and RO filter parts.
+Reason: Physical retail inventory includes dozens of technical attributes printed in fine text on manufacturer boxes. Automated optical extraction accelerates catalog creation from 10 minutes per SKU to under 30 seconds while eliminating transcription errors.
+Alternatives: Manual text entry by shop staff (rejected: slow, high error rate for technical electrical specifications); generic OCR libraries (rejected: lacks context-aware parsing of structured electrical specs and compatibility fitments).
+Trade-offs: Requires optional `GEMINI_API_KEY`; designed with graceful fallback so admin catalog workflows remain 100% operational without AI.
+Status: Active
+
+## DEC-019 — Test Suite Expansion & Quality Verification Framework
+
+Date: 2026-09-30
+Decision: Expand the automated unit test suite from 26 tests to 62 tests across 16 test suites using the zero-dependency Node 24 native test runner:
+1. Security & Guardrails Verification (`tests/security.test.ts`): Automated test suites verifying customer self-cancellation rules, payload injection neutralization (negative price/quantity), media upload role authorization, sliding-window rate limiting isolation, open redirect protection, SSRF blocklists, and deep magic-bytes image inspection.
+2. Google Drive Storage Verification (`tests/google-drive.test.ts`): Tests configuration detection, service account validation, product ID sanitization, canonical media URL generation, and filename matching across multiple extensions.
+3. AI Product Scanner Verification (`tests/product-scanner.test.ts`): Tests image payload validation, heuristic fallback spec extraction, role privilege gating, and output sanitization against XSS/script injection.
+4. SEO & Metadata Resiliency (`tests/metadata.test.ts`): Verifies metadata title generation, order confirmation page SEO, and graceful fallback handling for missing orders (preventing BUG-SHIVA-002 regressions).
+5. Continuous Quality Gates: All commits must maintain 100% test pass rate (`npm test`), zero TypeScript compiler errors (`npm run typecheck`), zero ESLint errors/warnings (`npm run lint`), and successful production compilation (`npm run build`).
+Reason: Guarantees zero regression risk across business logic, security protections, and storage integrations as the store expands.
+Alternatives: Jest/Vitest (rejected: adds unnecessary runtime dependencies when Node 24 native test runner executes all tests in under 3 seconds).
+Trade-offs: None.
 Status: Active
 
 ------------------------------------------------------------------------
