@@ -4,21 +4,44 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+import {
+  checkRateLimit,
+  getClientIp,
+  resetRateLimit,
+  GENERIC_RATE_LIMIT_ERROR,
+} from "@/lib/security/rate-limit";
+import { validateSafeRedirect } from "@/lib/security/validation";
+
 export interface AuthActionResult {
   error?: string;
   success?: string;
 }
 
 /**
- * Handles email + password login.
+ * Handles email + password login with defensive rate limiting and redirect validation.
  */
 export async function login(
   _prevState: AuthActionResult | null,
   formData: FormData,
 ): Promise<AuthActionResult> {
-  const email = (formData.get("email") as string)?.trim();
+  const ip = await getClientIp();
+  const email = (formData.get("email") as string)?.trim().toLowerCase();
   const password = formData.get("password") as string;
-  const redirectTo = (formData.get("redirect") as string) || "/account";
+  const rawRedirect = formData.get("redirect") as string;
+  const safeRedirect = validateSafeRedirect(rawRedirect, "/account");
+
+  // 1. IP and Account rate limiting (5 attempts per minute window)
+  const ipLimit = checkRateLimit("auth", ip);
+  if (!ipLimit.allowed) {
+    return { error: GENERIC_RATE_LIMIT_ERROR };
+  }
+
+  if (email) {
+    const accountLimit = checkRateLimit("auth", email);
+    if (!accountLimit.allowed) {
+      return { error: GENERIC_RATE_LIMIT_ERROR };
+    }
+  }
 
   if (!email || !password) {
     return { error: "Please provide both email and password." };
@@ -31,12 +54,15 @@ export async function login(
   });
 
   if (error) {
-    // Provide safe, user-friendly feedback without exposing internal errors
-    return { error: error.message || "Invalid email or password. Please try again." };
+    // Defense against user enumeration (OWASP A07): Always return generic credential failure
+    return { error: "Invalid email or password. Please check your credentials and try again." };
   }
 
+  // Clear rate limit bucket on successful authentication
+  resetRateLimit("auth", email);
+
   revalidatePath("/", "layout");
-  redirect(redirectTo);
+  redirect(safeRedirect);
 }
 
 /**
@@ -46,11 +72,22 @@ export async function signup(
   _prevState: AuthActionResult | null,
   formData: FormData,
 ): Promise<AuthActionResult> {
+  const ip = await getClientIp();
+  const ipLimit = checkRateLimit("auth", ip);
+  if (!ipLimit.allowed) {
+    return { error: GENERIC_RATE_LIMIT_ERROR };
+  }
+
   const fullName = (formData.get("fullName") as string)?.trim();
   const phone = (formData.get("phone") as string)?.trim();
   const email = (formData.get("email") as string)?.trim();
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
+  const consent = formData.get("consent");
+
+  if (!consent) {
+    return { error: "You must accept the Terms & Conditions and Privacy Policy to register." };
+  }
 
   if (!fullName) {
     return { error: "Please enter your full name." };

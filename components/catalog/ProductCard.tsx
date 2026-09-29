@@ -93,7 +93,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="grid grid-cols-2 gap-2.5">
           <Link
             href={`/products/${product.slug}`}
-            className="flex h-11 items-center justify-center gap-1.5 rounded-lg border-2 border-slate-300 bg-white text-sm font-bold text-slate-800 hover:bg-slate-100 hover:border-slate-400 transition-colors"
+            className="flex h-11 items-center justify-center gap-1.5 rounded-lg border-2 border-slate-300 bg-white text-sm font-bold text-slate-800 hover:bg-slate-100 hover:border-slate-400 transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 outline-none"
+            aria-label={`View details for ${product.name}`}
           >
             <Eye className="h-4 w-4 text-slate-600" />
             <span>View Details</span>
@@ -101,11 +102,12 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <Link
             href={`/products/${product.slug}#order`}
-            className={`flex h-11 items-center justify-center gap-1.5 rounded-lg text-sm font-bold text-white transition-colors ${
+            className={`flex h-11 items-center justify-center gap-1.5 rounded-lg text-sm font-bold text-white transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 outline-none ${
               isInStock
                 ? "bg-blue-700 hover:bg-blue-800 active:bg-blue-900 shadow-xs"
                 : "cursor-not-allowed bg-slate-400"
             }`}
+            aria-label={isInStock ? `Order ${product.name}` : `${product.name} is currently out of stock`}
             aria-disabled={!isInStock}
           >
             <ShoppingCart className="h-4 w-4" />

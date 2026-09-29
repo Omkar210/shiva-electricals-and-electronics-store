@@ -76,13 +76,15 @@ export interface ConfirmedOrderDetails {
   order_status_history?: OrderStatusHistoryItem[];
 }
 
+import crypto from "crypto";
+
 /**
- * Generates an authoritative, human-readable order number.
- * Format: SE-YYYYMMDD-XXXX (e.g. SE-20260924-4821)
+ * Generates an authoritative, cryptographically secure order number.
+ * Format: SE-YYYYMMDD-XXXXXX (e.g. SE-20260924-482109)
  */
 function generateOrderNumber(): string {
   const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+  const randomSuffix = crypto.randomInt(100000, 999999);
   return `SE-${dateStr}-${randomSuffix}`;
 }
 

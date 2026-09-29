@@ -51,6 +51,6 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       return new Response("File not found", { status: 404 });
     }
 
-    return new Response(`Failed to retrieve file: ${message}`, { status: 500 });
+    return new Response("Failed to retrieve media file", { status: 500 });
   }
 }

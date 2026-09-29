@@ -188,7 +188,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       });
     }
 
-    return new Response(`Failed to retrieve image: ${message}`, {
+    return new Response("Failed to retrieve product media", {
       status: 500,
     });
   }

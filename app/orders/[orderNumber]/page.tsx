@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getOrderByNumber } from "@/lib/orders/service";
+import { isOrderAuthorized } from "@/lib/orders/auth";
+import { OrderVerificationCard } from "@/components/orders/OrderVerificationCard";
 import { OrderStatusBadge } from "@/components/orders/OrderStatusBadge";
 import { OrderTimelineStepper } from "@/components/orders/OrderTimelineStepper";
 import { CancelOrderButton } from "@/components/orders/CancelOrderButton";
@@ -41,6 +43,26 @@ export default async function OrderTrackingPage({
 
   if (!order) {
     notFound();
+  }
+
+  // Enforce OWASP Broken Access Control / IDOR defense: Check if current visitor is authorized
+  const { authorized } = await isOrderAuthorized(order);
+
+  if (!authorized) {
+    return (
+      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-6">
+        <div>
+          <Link
+            href="/orders"
+            className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-300 bg-white px-4 py-2 text-sm font-bold text-slate-800 hover:bg-slate-50 transition-colors shadow-2xs"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to All Orders</span>
+          </Link>
+        </div>
+        <OrderVerificationCard orderNumber={order.order_number} />
+      </div>
+    );
   }
 
   const address = order.delivery_address_snapshot;

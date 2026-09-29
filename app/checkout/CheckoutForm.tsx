@@ -404,11 +404,39 @@ export default function CheckoutForm({ cart, profile }: CheckoutFormProps) {
             </div>
           </div>
 
+          {/* Form Consent Checkbox (DPDP Act & CPA Rules Compliant) */}
+          <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-4 space-y-2">
+            <label htmlFor="checkout-consent" className="flex items-start gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="checkout-consent"
+                name="consent"
+                required
+                className="mt-1 h-5 w-5 rounded border-2 border-slate-400 text-blue-700 focus:ring-2 focus:ring-blue-700 cursor-pointer shrink-0"
+              />
+              <span className="text-sm font-medium text-slate-700 leading-relaxed">
+                I agree to the{" "}
+                <Link href="/terms" target="_blank" className="font-bold text-blue-700 underline hover:text-blue-800">
+                  Terms &amp; Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="/refund-policy" target="_blank" className="font-bold text-blue-700 underline hover:text-blue-800">
+                  Refund &amp; Return Policy
+                </Link>
+                , and I consent to Shiva Electrical collecting my delivery contact details to fulfill this order under the{" "}
+                <Link href="/privacy-policy" target="_blank" className="font-bold text-blue-700 underline hover:text-blue-800">
+                  Privacy Policy (DPDP Act 2023)
+                </Link>
+                . <span className="text-red-700 font-bold">*</span>
+              </span>
+            </label>
+          </div>
+
           {/* Place Order CTA */}
           <button
             type="submit"
             disabled={isPending || pincodeStatus !== "valid"}
-            className="flex h-13 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:cursor-not-allowed disabled:bg-slate-400 transition-colors"
+            className="flex h-13 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:cursor-not-allowed disabled:bg-slate-400 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-700"
           >
             {isPending ? (
               <>

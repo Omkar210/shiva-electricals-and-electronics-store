@@ -375,14 +375,23 @@ export async function createProduct(formData: FormData) {
       file_metadata: { drive_file_id: driveFileId, drive_file_name: driveFileName },
     });
   } else {
-    // Process and upload product image if file provided
-    const imageFile = formData.get("file") as File | null;
-    if (imageFile && imageFile.size > 0 && newProduct) {
+    // Process and upload product images if files provided (supports multi-angle scans)
+    const rawFiles = formData.getAll("files") as File[];
+    const singleFile = formData.get("file") as File | null;
+    const allFiles =
+      rawFiles.length > 0
+        ? rawFiles.filter((f) => f && f.size > 0)
+        : singleFile && singleFile.size > 0
+          ? [singleFile]
+          : [];
+
+    for (let i = 0; i < allFiles.length; i++) {
+      const file = allFiles[i];
       const imageFormData = new FormData();
-      imageFormData.append("file", imageFile);
-      imageFormData.append("altText", name);
-      imageFormData.append("isPrimary", "true");
-      await uploadProductImage(newProduct.id, imageFormData);
+      imageFormData.append("file", file);
+      imageFormData.append("altText", i === 0 ? name : `${name} (Angle ${i + 1})`);
+      imageFormData.append("isPrimary", i === 0 ? "true" : "false");
+      await uploadProductImage(newProduct.id, imageFormData, i);
     }
   }
 

@@ -7,6 +7,8 @@ import {
   deleteFromGoogleDrive,
 } from "@/lib/storage/google-drive";
 
+import { validateImageMagicBytes } from "@/lib/security/validation";
+
 /**
  * Uploads an image either to Google Drive (if configured/selected)
  * or falls back to 'product-images' Supabase Storage bucket,
@@ -15,6 +17,7 @@ import {
 export async function uploadProductImage(
   productId: string,
   formData: FormData,
+  sortOrder: number = 0,
 ) {
   // Strictly Admin-only: No staff, customer, or guest access
   await requireRole(["admin"]);
@@ -28,15 +31,23 @@ export async function uploadProductImage(
     throw new Error("Please select a valid image file.");
   }
 
-  // Validate file type
+  // Validate declared MIME type
   const validTypes = ["image/jpeg", "image/png", "image/webp", "image/avif"];
   if (!validTypes.includes(file.type)) {
     throw new Error("Only JPEG, PNG, WebP, and AVIF images are supported.");
   }
 
-  // Max 10MB (allow larger files now that we support external storage)
+  // Max 10MB
   if (file.size > 10 * 1024 * 1024) {
     throw new Error("Image file size must be less than 10MB.");
+  }
+
+  // Read raw buffer and enforce deep magic byte signature verification (OWASP A04)
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const signatureCheck = validateImageMagicBytes(buffer);
+  if (!signatureCheck.valid) {
+    throw new Error(signatureCheck.error || "File signature does not match authorized image types.");
   }
 
   // Determine whether to use Google Drive
@@ -103,7 +114,7 @@ export async function uploadProductImage(
     storage_path: storagePath,
     alt_text: altText,
     is_primary: isPrimary,
-    sort_order: 0,
+    sort_order: sortOrder,
     storage_provider: storageProvider,
     external_id: externalId,
     file_size_bytes: file.size,

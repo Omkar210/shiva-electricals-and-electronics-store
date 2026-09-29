@@ -246,7 +246,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t-2 border-slate-200 pt-4 text-sm font-bold text-slate-800">
             <div className="flex items-center gap-2.5 rounded-lg bg-slate-50 p-2.5 border border-slate-200">
               <ShieldCheck className="h-5 w-5 text-blue-700 shrink-0" />
-              <span>100% Genuine Original Part</span>
+              <span>Verified Genuine Part</span>
             </div>
             <div className="flex items-center gap-2.5 rounded-lg bg-slate-50 p-2.5 border border-slate-200">
               <Wrench className="h-5 w-5 text-emerald-700 shrink-0" />

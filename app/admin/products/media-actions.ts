@@ -280,6 +280,16 @@ export async function getDriveProductConnectionsAction(): Promise<{
   }
 }
 
+import {
+  validateSafeExternalUrl,
+  validateImageMagicBytes,
+} from "@/lib/security/validation";
+import {
+  checkRateLimit,
+  getClientIp,
+  GENERIC_RATE_LIMIT_ERROR,
+} from "@/lib/security/rate-limit";
+
 /**
  * Server Action: Uploads an image file directly to Google Drive (via Webhook or Drive API)
  * and records the connection metadata in Supabase.
@@ -289,6 +299,13 @@ export async function uploadProductImageToDriveAction(
 ): Promise<{ success: boolean; driveFileId?: string; error?: string }> {
   await requireRole(["admin"]);
   const supabase = await createClient();
+
+  // Rate limiting to defend against abuse / resource exhaustion
+  const ip = await getClientIp();
+  const mediaLimit = checkRateLimit("media", ip);
+  if (!mediaLimit.allowed) {
+    return { success: false, error: GENERIC_RATE_LIMIT_ERROR };
+  }
 
   const productId = formData.get("productId") as string;
   const file = formData.get("file") as File | null;
@@ -308,13 +325,26 @@ export async function uploadProductImageToDriveAction(
   }
 
   try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+
+    // Magic bytes verification
+    const signatureCheck = validateImageMagicBytes(buffer);
+    if (!signatureCheck.valid) {
+      return { success: false, error: signatureCheck.error || "Invalid image signature." };
+    }
+
     let driveFileId: string | null = null;
     const fileName = `${productId}.jpg`;
 
     // 1. If Google Apps Script Web App or custom Drive upload URL is provided
     const uploadUrl = process.env.GOOGLE_DRIVE_UPLOAD_URL;
     if (uploadUrl) {
-      const buffer = Buffer.from(await file.arrayBuffer());
+      // Defend against SSRF (OWASP A10): Ensure destination URL is valid HTTPS to allowed hosts
+      const urlCheck = validateSafeExternalUrl(uploadUrl);
+      if (!urlCheck.valid) {
+        throw new Error(`Insecure or unapproved Drive webhook URL: ${urlCheck.error}`);
+      }
+
       const base64Data = buffer.toString("base64");
 
       const uploadRes = await fetch(uploadUrl, {

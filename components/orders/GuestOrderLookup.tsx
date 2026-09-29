@@ -23,46 +23,55 @@ export function GuestOrderLookup() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-xs space-y-4">
+    <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-xs space-y-4">
       <div className="flex items-center gap-2">
-        <Search className="h-5 w-5 text-blue-600" />
-        <h3 className="font-bold text-gray-900 text-sm">
+        <Search className="h-5 w-5 text-blue-700" />
+        <h3 className="font-bold text-slate-900 text-base">
           Track an Order
         </h3>
       </div>
-      <p className="text-xs text-gray-500">
-        Enter the Order Number from your confirmation SMS or receipt (e.g. <span className="font-mono font-semibold text-gray-700">SE-20260924-4821</span>).
+      <p className="text-sm text-slate-600">
+        Enter the Order Number from your confirmation SMS or receipt (e.g. <span className="font-mono font-bold text-slate-800">SE-20260924-4821</span>).
       </p>
 
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-        <input
-          type="text"
-          value={orderNumber}
-          onChange={(e) => {
-            setOrderNumber(e.target.value);
-            if (error) setError(null);
-          }}
-          placeholder="SE-YYYYMMDD-XXXX"
-          className="flex-1 rounded-xl border border-gray-300 px-4 py-2.5 text-xs text-gray-900 uppercase font-mono tracking-wider focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600"
-        />
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div>
+          <label htmlFor="order-lookup-input" className="sr-only">
+            Order Number
+          </label>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              id="order-lookup-input"
+              type="text"
+              value={orderNumber}
+              onChange={(e) => {
+                setOrderNumber(e.target.value);
+                if (error) setError(null);
+              }}
+              placeholder="e.g. SE-20260924-4821"
+              aria-label="Order Number for tracking"
+              className="h-12 flex-1 rounded-lg border-2 border-slate-300 px-4 text-base text-slate-900 uppercase font-mono tracking-wider focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700/20"
+            />
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Searching...
-            </>
-          ) : (
-            "Track Order"
-          )}
-        </button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="flex h-12 items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 disabled:opacity-50 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-700"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Searching...</span>
+                </>
+              ) : (
+                <span>Track Order</span>
+              )}
+            </button>
+          </div>
+        </div>
       </form>
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-sm font-bold text-red-700">{error}</p>}
     </div>
   );
 }

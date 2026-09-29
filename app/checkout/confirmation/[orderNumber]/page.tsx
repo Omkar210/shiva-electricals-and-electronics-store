@@ -1,6 +1,7 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getOrderByNumber } from "@/lib/orders/service";
+import { isOrderAuthorized } from "@/lib/orders/auth";
 import {
   CheckCircle2,
   Package,
@@ -39,6 +40,12 @@ export default async function OrderConfirmationPage({
 
   if (!order) {
     notFound();
+  }
+
+  // Prevent IDOR access: Only the session who placed it, owner, or staff may view full confirmation
+  const { authorized } = await isOrderAuthorized(order);
+  if (!authorized) {
+    redirect(`/orders/${orderNumber}`);
   }
 
   const address = order.delivery_address_snapshot;

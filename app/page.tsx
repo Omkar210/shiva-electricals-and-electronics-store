@@ -38,9 +38,9 @@ export default async function HomePage() {
     },
     {
       icon: Droplet,
-      title: "Free Water TDS & Purity Testing",
+      title: "Water TDS & Quality Testing",
       description:
-        "Complimentary water TDS check during every delivery to ensure your drinking water is 100% healthy and pure.",
+        "Complimentary water TDS and purity check during delivery to verify safe drinking water standards.",
       highlight: "Free with Order",
     },
     {
@@ -62,7 +62,7 @@ export default async function HomePage() {
             <div className="space-y-6 lg:col-span-7">
               <div className="inline-flex items-center gap-2 rounded-lg border-2 border-blue-200 bg-blue-50 px-4 py-1.5 text-sm font-bold text-blue-900">
                 <Sparkles className="h-4 w-4 text-blue-700" />
-                <span>Authorized Local Dealer &amp; Certified Service Store</span>
+                <span>Trusted Local Store &amp; Certified Technician Installation</span>
               </div>
 
               <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-5xl sm:leading-tight">
@@ -98,8 +98,8 @@ export default async function HomePage() {
               {/* Trust Reassurance Badges */}
               <div className="grid grid-cols-3 gap-4 border-t-2 border-slate-100 pt-6">
                 <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
-                  <div className="text-xl sm:text-2xl font-black text-blue-700">100%</div>
-                  <div className="text-sm font-bold text-slate-700">Original Spares</div>
+                  <div className="text-xl sm:text-2xl font-black text-blue-700">Verified</div>
+                  <div className="text-sm font-bold text-slate-700">Genuine Spares</div>
                 </div>
                 <div className="rounded-lg bg-slate-50 p-3 border border-slate-200">
                   <div className="text-xl sm:text-2xl font-black text-blue-700">Doorstep</div>

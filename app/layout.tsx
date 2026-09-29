@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CookieBanner from "@/components/CookieBanner";
 import { JsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Shiva Electrical & Electronics",
   },
   description:
-    "Authorized local dealer for RO water purifiers, genuine replacement filter candles, ceiling fans, wiring, and certified doorstep installation services with same-day delivery.",
+    "Trusted local retailer and service specialist for RO water purifiers, genuine replacement filter candles, ceiling fans, wiring, and certified doorstep installation with same-day local delivery.",
   keywords: [
     "RO purifier",
     "water purifier",
@@ -76,12 +77,21 @@ const localBusinessSchema = {
   "@type": "HomeGoodsStore",
   name: "Shiva Electrical & Electronics",
   description:
-    "Local retailer and service center for RO water purifiers, replacement filter cartridges, ceiling fans, electrical wiring, and doorstep technical installations.",
+    "Local independent multi-brand retailer and certified service center for RO water purifiers, replacement filter cartridges, ceiling fans, electrical wiring, and doorstep technical installations.",
   url: siteUrl,
   telephone: "+91-9876543210",
+  email: "contact@shivaelectrical.in",
   priceRange: "₹₹",
   paymentAccepted: "Cash, UPI, Pay on Delivery",
   currenciesAccepted: "INR",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Shop No. 4, Market Yard Commercial Complex, Main Market Road",
+    addressLocality: "Solapur",
+    addressRegion: "Maharashtra",
+    postalCode: "413001",
+    addressCountry: "IN",
+  },
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -116,6 +126,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieBanner />
       </body>
     </html>
   );

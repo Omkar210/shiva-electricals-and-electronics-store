@@ -157,13 +157,13 @@ export default function CartView({ initialCart }: CartViewProps) {
                       type="button"
                       disabled={isPending || item.quantity <= 1}
                       onClick={() => onUpdateQty(item.productId, item.quantity - 1)}
-                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 transition-colors"
-                      aria-label="Decrease quantity"
+                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 outline-none"
+                      aria-label={`Decrease quantity of ${product.name}`}
                     >
                       <Minus className="h-4 w-4 stroke-[2.5]" />
                     </button>
 
-                    <span className="w-10 text-center text-base font-bold text-slate-900">
+                    <span className="w-10 text-center text-base font-bold text-slate-900" aria-label={`Current quantity ${item.quantity}`}>
                       {item.quantity}
                     </span>
 
@@ -171,8 +171,8 @@ export default function CartView({ initialCart }: CartViewProps) {
                       type="button"
                       disabled={isPending || item.quantity >= item.maxAvailable}
                       onClick={() => onUpdateQty(item.productId, item.quantity + 1)}
-                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 transition-colors"
-                      aria-label="Increase quantity"
+                      className="flex h-9 w-9 items-center justify-center rounded-md text-slate-700 hover:bg-slate-100 disabled:opacity-30 transition-colors focus-visible:ring-2 focus-visible:ring-blue-700 outline-none"
+                      aria-label={`Increase quantity of ${product.name}`}
                     >
                       <Plus className="h-4 w-4 stroke-[2.5]" />
                     </button>
@@ -193,8 +193,9 @@ export default function CartView({ initialCart }: CartViewProps) {
                     type="button"
                     disabled={isPending}
                     onClick={() => onRemove(item.productId)}
-                    className="flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 transition-colors cursor-pointer"
-                    title="Remove product from cart"
+                    className="flex items-center gap-1 rounded-md border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-600 hover:border-red-300 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-red-700 outline-none"
+                    aria-label={`Remove ${product.name} from cart`}
+                    title={`Remove ${product.name} from cart`}
                   >
                     <Trash2 className="h-4 w-4 text-red-600" />
                     <span>Delete</span>

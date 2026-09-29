@@ -130,10 +130,34 @@ export default function SignupPage() {
             />
           </div>
 
+          {/* Form Consent Checkbox (DPDP Act & CPA Rules Compliant) */}
+          <div className="rounded-xl border-2 border-slate-200 bg-slate-50 p-3.5 space-y-1">
+            <label htmlFor="signup-consent" className="flex items-start gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                id="signup-consent"
+                name="consent"
+                required
+                className="mt-1 h-5 w-5 rounded border-2 border-slate-400 text-blue-700 focus:ring-2 focus:ring-blue-700 cursor-pointer shrink-0"
+              />
+              <span className="text-sm font-medium text-slate-700 leading-relaxed">
+                I agree to the{" "}
+                <Link href="/terms" target="_blank" className="font-bold text-blue-700 underline hover:text-blue-800">
+                  Terms &amp; Conditions
+                </Link>{" "}
+                and consent to data processing under the{" "}
+                <Link href="/privacy-policy" target="_blank" className="font-bold text-blue-700 underline hover:text-blue-800">
+                  Privacy Policy (DPDP Act 2023)
+                </Link>
+                . <span className="text-red-700 font-bold">*</span>
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={isPending}
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:opacity-50 transition-colors cursor-pointer"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-6 text-base font-bold text-white shadow-xs hover:bg-blue-800 active:bg-blue-900 disabled:opacity-50 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-blue-700"
           >
             {isPending ? (
               <>
