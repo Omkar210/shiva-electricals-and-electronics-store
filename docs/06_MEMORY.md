@@ -37,14 +37,19 @@ operational admin system.
 Target:
 
 ``` text
-GitHub
+GitHub Actions (CI/CD: lint, typecheck, test, security audit)
    ↓
-Vercel
+Vercel Edge (Region: bom1 - Mumbai, India)
    ↓
-Next.js application
+Next.js 16 Application
    ↓
-Supabase
+Supabase (PostgreSQL + Auth + Storage)
+   +
+Google Drive (Primary Product Image Media Provider)
 ```
+
+Edge regions:
+- Primary edge deployment targeted to Mumbai (`bom1`) via `vercel.json` for sub-50ms local Indian shopper latency.
 
 Optional:
 
@@ -454,6 +459,55 @@ Decision: Expand the automated unit test suite from 26 tests to 62 tests across 
 Reason: Guarantees zero regression risk across business logic, security protections, and storage integrations as the store expands.
 Alternatives: Jest/Vitest (rejected: adds unnecessary runtime dependencies when Node 24 native test runner executes all tests in under 3 seconds).
 Trade-offs: None.
+Status: Active
+
+## DEC-020 — Multi-Agent QA Testing Cycle & Defect Remediation (BUG-SHIVA-001 to BUG-SHIVA-004)
+
+Date: 2026-09-25
+Decision: Institutionalize formal defect reporting, multi-agent QA verification runs, and full remediation across core data and presentation contracts:
+1. Formal QA Defect Matrix (`qa/BUG_REPORT.md` & `qa/REGRESSION_REPORT.md`): Executed 35 end-to-end automated and adversarial test cases achieving 100% resolution of identified defects (0 open blockers, 0 open defects).
+2. Seed UUID Hex Formatting (`BUG-SHIVA-001` — P1): Replaced invalid non-hexadecimal prefixes (`p1000...`) in `supabase/seed.sql` with compliant RFC 4122 hexadecimal UUID literals (`a1000000-0000-0000-0000-000000000001` through `0006`). Fixed fatal PostgreSQL `22P02` syntax errors during local migrations and onboarding seeding.
+3. Asynchronous Metadata Validation (`BUG-SHIVA-002` — P3): Injected authoritative `getOrderByNumber(orderNumber)` existence checks inside `generateMetadata` for `/checkout/confirmation/[orderNumber]` and `/orders/[orderNumber]`. Returns descriptive `"Order Not Found"` titles when order records do not exist, eliminating misleading "Order Confirmed" previews on 404 responses.
+4. Single `<main>` Landmark WAI-ARIA Enforcement (`BUG-SHIVA-003` — P4): Replaced nested `<main>` element in `app/admin/layout.tsx` with standard layout container `<div>`, ensuring compliance with HTML5 / WAI-ARIA single main landmark specification and eliminating Playwright test strict mode locator collisions.
+5. Branded Dynamic & Static Favicon Assets (`BUG-SHIVA-004` — P4): Added dynamic Next.js icon generator (`app/icon.tsx`) rendering electrical & water themed brand graphics via `ImageResponse`, coupled with static `public/favicon.ico`, eliminating recurring 404 console errors.
+Reason: Eliminates runtime onboarding failures, protects SEO integrity, guarantees assistive technology accessibility, and ensures reliable test automation.
+Alternatives: Ad-hoc bug fixing without documentation (rejected: creates recurrence risk and obscures known bug history).
+Trade-offs: Minor async overhead in `generateMetadata` on order tracking routes, fully mitigated by Next.js request deduplication.
+Status: Active
+
+## DEC-021 — Senior-Friendly High-Contrast UI Design System & Component Primitives
+
+Date: 2026-09-25
+Decision: Implement an accessible, senior-friendly, high-contrast design system adhering to WCAG 2.1 AA/AAA contrast guidelines:
+1. Palette Architecture: High-contrast palette anchored on `#0284C7` (Ocean Blue) primary, `#D97706` (Amber) badges, `#047857` (Emerald) positive stock/success badges, and `#0F172A` (Slate 900) high-contrast text on pure white/slate backgrounds.
+2. Senior-Friendly Ergonomics: Designed for local shop owners and elder retail customers: minimum 15px body copy, 18px+ interactive font sizing, bold readable weights, and 48px+ touch targets on all interactive buttons, inputs, and steppers.
+3. Standardized Accessible UI Primitives:
+   - `components/ui/button.tsx`: Variant-driven button component with focus rings, accessible contrast ratios, and loading states.
+   - `components/ui/badge.tsx`: Semantic badge component for stock alerts, order states, and technical tags.
+   - `components/ui/card.tsx`: High-contrast bordered card containers with clean elevation.
+   - `components/ui/dialog.tsx`: Accessible modal dialogs with focus trapping and backdrop dimming.
+   - `components/ui/input.tsx`: High-visibility inputs with distinct focus borders and error states.
+4. Complete Component Upgrade: Refactored navigation (`Navbar`, `Footer`), catalog (`ProductCard`, `CategoryCard`, `AddToCartButton`, `DeliveryCheck`, `SearchFilterBar`), orders (`OrderStatusBadge`, `OrderTimelineStepper`), and checkout/account views to utilize the new design primitives.
+Reason: Shiva Electrical serves a diverse demographic of local customers, technicians, and older homeowners who require clear readability, high contrast, and tactile, thumb-friendly touch targets.
+Alternatives: Generic off-the-shelf theme (rejected: low contrast text and small touch targets lead to customer abandonment and operational mistakes).
+Trade-offs: Slightly larger layout footprints on mobile screens, balanced by superior usability and accessibility.
+Status: Active
+
+## DEC-022 — Advanced Multi-Stage CI/CD Pipeline & Mumbai Edge (bom1) Deployment
+
+Date: 2026-10-03
+Decision: Upgrade the deployment pipeline with a multi-stage GitHub Actions CI/CD workflow and configure Vercel edge deployment in the Mumbai (`bom1`) region:
+1. Multi-Stage Pipeline (`.github/workflows/ci.yml`):
+   - Concurrency governance: `cancel-in-progress: true` prevents redundant runner queue builds on rapid commits.
+   - `code-quality`: Isolated linting (`eslint .`) and TypeScript verification (`tsc --noEmit`).
+   - `test`: Automated execution of the full unit and security test suite (`npm test`).
+   - `security-audit`: High-severity dependency vulnerability audit gate (`npm audit --audit-level=high`).
+   - `deploy-preview`: Automated Vercel preview deployment on Pull Requests with automatic PR sticky comment containing the live preview URL.
+   - `deploy-production`: Automated zero-downtime production deployment on push to `main` using prebuilt Vercel CLI artifacts.
+2. Low-Latency Local Edge Deployment (`vercel.json`): Configured `"regions": ["bom1"]` (Mumbai data center) to provide sub-50ms roundtrip response times for Indian customers, along with `cleanUrls: true` and `trailingSlash: false`.
+Reason: Eliminates deployment regressions, prevents vulnerable dependency merging, accelerates pull request reviews, and maximizes storefront responsiveness for local commerce traffic in Maharashtra.
+Alternatives: Relying on manual Vercel dashboard triggers or default US-East regions (rejected: increases latency for Indian shoppers and lacks automated PR preview commenting).
+Trade-offs: Requires configuring VERCEL_TOKEN, VERCEL_ORG_ID, and VERCEL_PROJECT_ID secrets in GitHub repository for automated deployments.
 Status: Active
 
 ------------------------------------------------------------------------
